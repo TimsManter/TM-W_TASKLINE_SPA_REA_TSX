@@ -1,5 +1,7 @@
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+
 module.exports = {
-  entry: "./src/App.tsx",
+  entry: "./src/tsx/App.tsx",
   output: {
     filename: "bundle.js",
     path: __dirname + "/dist"
@@ -20,6 +22,16 @@ module.exports = {
       {
         test: /\.tsx?$/,
         loader: "awesome-typescript-loader"
+      },
+
+      {
+        test: /\.scss$/,
+        include: __dirname + "/src/scss",
+        use: [
+          { loader: "style-loader" },
+          { loader: "css-loader" },
+          { loader: "sass-loader" }
+        ]
       },
 
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
@@ -43,12 +55,18 @@ module.exports = {
   // assume a corresponding global variable exists and use that instead.
   // This is important because it allows us to avoid bundling all of our
   // dependencies, which allows browsers to cache those libraries between builds.
-  externals: {
+  /*externals: {
     "react": "React",
     "react-dom": "ReactDOM"
-  },
+  },*/
 
   devServer: {
     contentBase: __dirname + "/dist"
-  }
+  },
+
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "src/ejs/index.ejs"
+    })
+  ]
 };
