@@ -11,6 +11,7 @@
 		],
 		"triple-equals": true,
 		"no-var-keyword": true,
+		"no-any": true,
 		"quotemark": [
 			true,
 			"double"
