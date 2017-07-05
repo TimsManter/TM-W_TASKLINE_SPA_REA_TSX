@@ -11,10 +11,7 @@ export default class Pool extends React.Component<P, S> {
     return (
       <Row>
         <Well className="step-pool">
-          <Task size={2}>Send Nudes</Task>
-          <Task>Send Nudes</Task>
-          <Task>Send Nudes</Task>
-          <Task>Send Nudes</Task>
+          {this.props.children}
         </Well>
       </Row>
     );
