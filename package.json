@@ -1,7 +1,7 @@
 {
-  "name": "react-tasks-line",
+  "name": "tm-w_taskline_spa_rea_tsx",
   "version": "1.0.0",
-  "description": "React timeline with tasks grid",
+  "description": "React timeline with task grid",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
