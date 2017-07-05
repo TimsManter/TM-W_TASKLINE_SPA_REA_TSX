@@ -1,0 +1,24 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "0.1.0",
+  "isShellCommand": true,
+  "showOutput": "always",
+  "tasks": [
+    {
+      "taskName": "build:dev",
+      "command": "webpack"
+    },
+    {
+      "taskName": "build:prod",
+      "command": "webpack",
+      "args": ["--env.production"]
+    },
+    {
+      "taskName": "start",
+      "isBuildCommand": true,
+      "command": "webpack-dev-server",
+      "args": ["--open"]
+    }
+  ]
+}

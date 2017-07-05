@@ -1,0 +1,27 @@
+{
+  "name": "react-tasks-line",
+  "version": "1.0.0",
+  "description": "React timeline with tasks grid",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --open"
+  },
+  "author": "TM",
+  "license": "ISC",
+  "dependencies": {
+    "@types/react": "^15.0.34",
+    "@types/react-dom": "^15.5.1",
+    "react": "^15.6.1",
+    "react-dnd": "^2.4.0",
+    "react-dnd-html5-backend": "^2.4.1",
+    "react-dom": "^15.6.1"
+  },
+  "devDependencies": {
+    "awesome-typescript-loader": "^3.2.1",
+    "source-map-loader": "^0.2.1",
+    "tslint": "^5.4.3",
+    "tslint-loader": "^3.5.3",
+    "typescript": "^2.4.1"
+  }
+}
