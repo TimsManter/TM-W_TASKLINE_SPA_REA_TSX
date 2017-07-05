@@ -47,4 +47,8 @@ module.exports = {
     "react": "React",
     "react-dom": "ReactDOM"
   },
+
+  devServer: {
+    contentBase: __dirname + "/dist"
+  }
 };
