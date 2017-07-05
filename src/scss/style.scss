@@ -1,3 +1,14 @@
+$task-height: 200px;
+
 #app {
   padding: 20px;
+}
+
+.step-pool {
+  height: $task-height;
+  width: 100%;
+}
+
+.task-wrapper {
+  height: $task-height - 40px;
 }
