@@ -1,5 +1,5 @@
 import * as React from "react";
-import update from 'react/lib/update';
+import update from "react/lib/update";
 import { Grid, Row, Col } from "react-bootstrap";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
@@ -33,7 +33,7 @@ export default class TaskGrid extends React.Component<P, S> {
     };
   }
 
-  moveCard?(dragIndex: number, hoverIndex: number) {
+  private moveCard?(dragIndex: number, hoverIndex: number) {
     const { tasks } = this.state;
     const dragCard = tasks[dragIndex];
 
