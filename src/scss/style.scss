@@ -8,6 +8,8 @@ $task-width-base: 150px;
 .step-pool {
   height: $task-height;
   min-width: 100%;
+  display: flex;
+  flex-direction: row;
 }
 
 .task-wrapper {

@@ -9,8 +9,8 @@ export interface S { }
 export default class Pool extends React.Component<P, S> {
   render(): JSX.Element {
     return (
-      <div className="step-pool">
-        <Well>
+      <div>
+        <Well className="step-pool">
           {this.props.children}
         </Well>
       </div>
