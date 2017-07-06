@@ -32,18 +32,14 @@ export default class TaskGrid extends React.Component<P, S> {
     };
   }
 
-  private moveCard?(dragIndex: number, hoverIndex: number) {
-    const { tasks } = this.state;
-    const dragCard = tasks[dragIndex];
-
-    this.setState(React.__Addons.update(this.state, {
-      tasks: {
-        $splice: [
-          [dragIndex, 1],
-          [hoverIndex, 0, dragCard],
-        ],
-      },
-    }));
+  private moveTask?(dragIndex: number, hoverIndex: number) {
+    let newTasks = this.state.tasks;
+    const tmpTask = newTasks[dragIndex];
+    newTasks[dragIndex] = newTasks[hoverIndex];
+    newTasks[hoverIndex] = tmpTask;
+    this.setState({
+      tasks: newTasks
+    });
   }
 
   render(): JSX.Element | null | false {
