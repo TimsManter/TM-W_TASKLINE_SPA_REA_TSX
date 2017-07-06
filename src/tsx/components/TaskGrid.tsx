@@ -1,5 +1,4 @@
 import * as React from "react";
-import update from "react/lib/update";
 import { Grid, Row, Col } from "react-bootstrap";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
@@ -37,7 +36,7 @@ export default class TaskGrid extends React.Component<P, S> {
     const { tasks } = this.state;
     const dragCard = tasks[dragIndex];
 
-    this.setState(update(this.state, {
+    this.setState(React.__Addons.update(this.state, {
       tasks: {
         $splice: [
           [dragIndex, 1],
