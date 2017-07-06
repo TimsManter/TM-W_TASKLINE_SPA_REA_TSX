@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Panel, Col } from "react-bootstrap";
+import { Panel, Col, Clearfix } from "react-bootstrap";
 
 export interface P {
   size?: number;
@@ -13,10 +13,11 @@ export default class Task extends React.Component<P, S> {
 
   render(): JSX.Element {
     return (
-      <Panel
-        className={"task-wrapper task-width-" + this.props.size}>
-        {this.props.children}
-      </Panel>
+      <div className={"task-wrapper task-width-" + this.props.size}>
+        <Panel>
+          {this.props.children}
+        </Panel>
+      </div>
     );
   }
 }

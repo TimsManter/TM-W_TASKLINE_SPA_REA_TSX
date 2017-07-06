@@ -17,7 +17,7 @@ export default class TaskGrid extends React.Component<P, S> {
 
   render(): JSX.Element {
     return (
-      <Grid fluid={true}>
+      <div>
         <Pool>
           <Task size={3}>Send Nudes</Task>
           <Task>Send Nudes</Task>
@@ -29,7 +29,7 @@ export default class TaskGrid extends React.Component<P, S> {
             <Task size={4}>Hehe</Task>
           </Col>
         </Pool>
-      </Grid>
+      </div>
     );
   }
 }
