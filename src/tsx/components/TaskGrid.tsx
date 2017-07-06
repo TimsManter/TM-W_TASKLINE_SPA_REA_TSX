@@ -17,6 +17,7 @@ interface S {
 export default class TaskGrid extends React.Component<P, S> {
   constructor() {
     super();
+    this.moveTask = this.moveTask.bind(this);
     this.state = {
       tasks: [
         {
@@ -27,33 +28,34 @@ export default class TaskGrid extends React.Component<P, S> {
           id: 3
         }, {
           id: 4
-        },
+        }
       ]
     };
   }
 
-  private moveTask?(dragIndex: number, hoverIndex: number) {
-    let newTasks = this.state.tasks;
-    const tmpTask = newTasks[dragIndex];
-    newTasks[dragIndex] = newTasks[hoverIndex];
-    newTasks[hoverIndex] = tmpTask;
+  moveTask?(dragIndex: number, hoverIndex: number) {
+    const { tasks } = this.state;
+    const tmpTask = tasks[dragIndex];
+    tasks[dragIndex] = tasks[hoverIndex];
+    tasks[hoverIndex] = tmpTask;
     this.setState({
-      tasks: newTasks
+      tasks: tasks
     });
   }
 
   render(): JSX.Element | null | false {
+    const { tasks } = this.state;
     return (
       <div>
         <Pool>
-          {this.state.tasks.map((task, i) => (
-            <Task>id: {task.id}, i: {i}</Task>
+          {tasks.map((task, i) => (
+            <Task key={i} index={i} id={i} moveTask={this.moveTask}>{task.id}</Task>
           ))}
         </Pool>
         <Pool>
-          <Task size={1}>Hehe</Task>
-          <Task size={1}>Hehe</Task>
-          <Task size={1}>Hehe</Task>
+          <Task index={1} id={1} size={1}>Hehe</Task>
+          <Task index={2} id={2} size={1}>Hehe</Task>
+          <Task index={3} id={3} size={1}>Hehe</Task>
         </Pool>
       </div>
     );
