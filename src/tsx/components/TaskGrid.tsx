@@ -5,9 +5,7 @@ import Pool from "./Pool";
 import Task from "./Task";
 
 interface P { }
-interface S {
-  
-}
+interface S { }
 
 export default class TaskGrid extends React.Component<P, S> {
   constructor() {

@@ -13,11 +13,10 @@ export default class Task extends React.Component<P, S> {
 
   render(): JSX.Element {
     return (
-      <Col xs={this.props.size}>
-        <Panel className="task-wrapper">
-          {this.props.children}
-        </Panel>
-      </Col>
+      <Panel
+        className={"task-wrapper task-width-" + this.props.size}>
+        {this.props.children}
+      </Panel>
     );
   }
 }

@@ -1,4 +1,5 @@
 $task-height: 200px;
+$task-width-base: 150px;
 
 #app {
   padding: 20px;
@@ -10,5 +11,20 @@ $task-height: 200px;
 }
 
 .task-wrapper {
-  height: $task-height - 40px;
+  height: 100%;
+  &.task-width-1 {
+    width: $task-width-base * 1;
+  }
+  &.task-width-2 {
+    width: $task-width-base * 2;
+  }
+  &.task-width-3 {
+    width: $task-width-base * 3;
+  }
+  &.task-width-4 {
+    width: $task-width-base * 4;
+  }
+  &.task-width-5 {
+    width: $task-width-base * 5;
+  }
 }
