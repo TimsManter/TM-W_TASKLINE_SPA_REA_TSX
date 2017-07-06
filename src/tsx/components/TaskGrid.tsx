@@ -7,14 +7,31 @@ import Pool from "./Pool";
 import Task from "./Task";
 
 interface P { }
-interface S { }
+interface S {
+  tasks: {
+    id: number;
+  }[];
+}
 
 @DragDropContext(HTML5Backend)
 export default class TaskGrid extends React.Component<P, S> {
   constructor() {
     super();
     this.state = {
-      
+      tasks: [
+        {
+          id: 1
+        },
+        {
+          id: 2
+        },
+        {
+          id: 3
+        },
+        {
+          id: 4
+        },
+      ]
     };
   }
 
@@ -22,8 +39,9 @@ export default class TaskGrid extends React.Component<P, S> {
     return (
       <div>
         <Pool>
-          <Task size={3}>Send Nudes</Task>
-          <Task>Send Nudes</Task>
+          {this.state.tasks.map((task, i) => (
+            <Task>id: {task.id}, i: {i}</Task>
+          ))}
         </Pool>
         <Pool>
           <Task size={1}>Hehe</Task>
