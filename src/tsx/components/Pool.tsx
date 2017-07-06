@@ -8,7 +8,6 @@ import Task from "./Task";
 export interface P { }
 export interface S { }
 
-@DragDropContext(HTML5Backend)
 export default class Pool extends React.Component<P, S> {
   
   render(): JSX.Element | false | null {

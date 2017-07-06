@@ -1,5 +1,7 @@
 import * as React from "react";
 import { Grid, Row, Col } from "react-bootstrap";
+import { DragDropContext } from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
 
 import Pool from "./Pool";
 import Task from "./Task";
@@ -7,6 +9,7 @@ import Task from "./Task";
 interface P { }
 interface S { }
 
+@DragDropContext(HTML5Backend)
 export default class TaskGrid extends React.Component<P, S> {
   constructor() {
     super();
@@ -15,7 +18,7 @@ export default class TaskGrid extends React.Component<P, S> {
     };
   }
 
-  render(): JSX.Element {
+  render(): JSX.Element | null | false {
     return (
       <div>
         <Pool>
