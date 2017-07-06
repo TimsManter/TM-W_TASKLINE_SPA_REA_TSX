@@ -23,11 +23,9 @@ export default class TaskGrid extends React.Component<P, S> {
           <Task>Send Nudes</Task>
         </Pool>
         <Pool>
-          <Col xs={3}>
-            <Task size={4}>Hehe</Task>
-            <Task size={4}>Hehe</Task>
-            <Task size={4}>Hehe</Task>
-          </Col>
+          <Task size={1}>Hehe</Task>
+          <Task size={1}>Hehe</Task>
+          <Task size={1}>Hehe</Task>
         </Pool>
       </div>
     );
