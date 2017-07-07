@@ -104,7 +104,8 @@ export default class Task extends React.Component<P, S> {
       
     return connectDragSource(connectDropTarget(
       <div style={{ opacity }}>
-        <Panel className={"task-wrapper task-width-" + this.props.size}>
+        <Panel header={this.props.children}
+          className={"task-wrapper task-width-" + this.props.size}>
           {this.props.children}
         </Panel>
       </div>
