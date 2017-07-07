@@ -16,10 +16,22 @@ interface TPool {
   tasks: TTask[];
 }
 
-interface P { }
+interface P { 
+  calcSize?: (taskId: number, poolIndex: number) => number;
+}
 interface S {
   pools: TPool[];
 }
+
+const calcSize = (grid: TaskGrid, taskId: number, poolIndex: number): number => {
+  let count = 1;
+  if (grid.state.pools.length > poolIndex + 1) {
+    count = grid.state.pools[poolIndex + 1].tasks.filter(task => {
+      return task.parentId === taskId;
+    }).length;
+  }
+  return count;
+};
 
 @DragDropContext(HTML5Backend)
 export default class TaskGrid extends React.Component<P, S> {
@@ -73,7 +85,8 @@ export default class TaskGrid extends React.Component<P, S> {
                 poolIndex={i}
                 id={task.id}
                 parentId={task.parentId}
-                moveTask={this.moveTask}>
+                moveTask={this.moveTask}
+                size={calcSize(this, task.id, i)}>
                 {task.content}
               </Task>
             ))}
