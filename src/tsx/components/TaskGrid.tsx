@@ -96,7 +96,7 @@ export default class TaskGrid extends React.Component<P, S> {
             { id: 5, parentId: 1, content: "Task 5" },
             { id: 6, parentId: 1, content: "Task 6" },
             { id: 7, parentId: 1, content: "Task 7" },
-            { id: 8, parentId: 2, content: "Task 8" },
+            { id: 8, parentId: 3, content: "Task 8" },
           ]
         }
       ]
