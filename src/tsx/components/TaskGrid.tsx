@@ -35,19 +35,23 @@ const calcSize = (grid: TaskGrid, taskId: number, poolIndex: number): number => 
 
 const renderChildTasks = (grid: TaskGrid, pool: TPool, parentPool: TPool): JSX.Element[] => {
   const tasks: JSX.Element[] = [];
+  let i = 0;
   parentPool.tasks.forEach(parentTask => {
     pool.tasks.filter(task => task.parentId === parentTask.id)
-      .forEach((task, i) => tasks.push(
-        <Task key={i}
-          index={i}
-          poolIndex={i}
-          id={task.id}
-          parentId={task.parentId}
-          moveTask={this.moveTask}
-          size={calcSize(grid, task.id, i)}>
-          {task.content}
-        </Task>
-      ));
+      .forEach((task) => {
+        tasks.push(
+          <Task key={i}
+            index={i}
+            poolIndex={i}
+            id={task.id}
+            parentId={task.parentId}
+            moveTask={grid.moveTask}
+            size={calcSize(grid, task.id, i)}>
+            {task.content}
+          </Task>
+        );
+        i++;
+      });
   });
   return tasks;
 };
