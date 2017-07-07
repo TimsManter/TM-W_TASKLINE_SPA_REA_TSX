@@ -33,6 +33,25 @@ const calcSize = (grid: TaskGrid, taskId: number, poolIndex: number): number => 
   return count === 0 ? 1 : count;
 };
 
+const renderChildTasks = (grid: TaskGrid, pool: TPool, parentPool: TPool): JSX.Element[] => {
+  const tasks: JSX.Element[] = [];
+  parentPool.tasks.forEach(parentTask => {
+    pool.tasks.filter(task => task.parentId === parentTask.id)
+      .forEach((task, i) => tasks.push(
+        <Task key={i}
+          index={i}
+          poolIndex={i}
+          id={task.id}
+          parentId={task.parentId}
+          moveTask={this.moveTask}
+          size={calcSize(grid, task.id, i)}>
+          {task.content}
+        </Task>
+      ));
+  });
+  return tasks;
+};
+
 @DragDropContext(HTML5Backend)
 export default class TaskGrid extends React.Component<P, S> {
   constructor() {
@@ -79,17 +98,16 @@ export default class TaskGrid extends React.Component<P, S> {
       <div>
         {pools.map((pool, i) => (
           <Pool key={i}>
-            {pool.tasks.map((task, j) => (
-              <Task key={j}
-                index={j}
-                poolIndex={i}
-                id={task.id}
-                parentId={task.parentId}
-                moveTask={this.moveTask}
-                size={calcSize(this, task.id, i)}>
-                {task.content}
-              </Task>
-            ))}
+            {i === 0 ?
+              (pool.tasks.map((task, j) => (
+                <Task key={j}
+                  index={j}
+                  poolIndex={i}
+                  id={task.id}
+                  moveTask={this.moveTask}
+                  size={calcSize(this, task.id, i)}>
+                  {task.content}
+                </Task>))) : renderChildTasks(this, pool, this.state.pools[i-1])}
           </Pool>
         ))}
         <Pool>{JSON.stringify(this.state, null, 4)}</Pool>
