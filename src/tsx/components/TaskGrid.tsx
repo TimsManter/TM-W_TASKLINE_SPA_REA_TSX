@@ -33,25 +33,43 @@ const calcSize = (grid: TaskGrid, taskId: number, poolIndex: number): number => 
   return count === 0 ? 1 : count;
 };
 
-const renderChildTasks = (grid: TaskGrid, pool: TPool, parentPool: TPool): JSX.Element[] => {
+const renderChildTasks = (
+  grid: TaskGrid,
+  pool: TPool,
+  poolIndex: number,
+  parentPool: TPool): JSX.Element[] => {
+  
   const tasks: JSX.Element[] = [];
   let i = 0;
   parentPool.tasks.forEach(parentTask => {
-    pool.tasks.filter(task => task.parentId === parentTask.id)
-      .forEach((task) => {
+    const filteredTasks = pool.tasks.filter(task => task.parentId === parentTask.id);
+    if (filteredTasks.length > 0) {
+      filteredTasks.forEach((task) => {
         tasks.push(
           <Task key={i}
             index={i}
-            poolIndex={i}
+            poolIndex={poolIndex}
             id={task.id}
             parentId={task.parentId}
             moveTask={grid.moveTask}
-            size={calcSize(grid, task.id, i)}>
+            size={calcSize(grid, task.id, poolIndex)}>
             {task.content}
           </Task>
         );
         i++;
       });
+    }
+    else {
+      tasks.push(
+      <Task key={i}
+        index={i}
+        poolIndex={poolIndex}
+        id={-1}
+        moveTask={grid.moveTask}>
+      </Task>
+      );
+      i++;
+    }
   });
   return tasks;
 };
@@ -111,7 +129,8 @@ export default class TaskGrid extends React.Component<P, S> {
                   moveTask={this.moveTask}
                   size={calcSize(this, task.id, i)}>
                   {task.content}
-                </Task>))) : renderChildTasks(this, pool, this.state.pools[i-1])}
+                </Task>))) :
+              renderChildTasks(this, pool, i, this.state.pools[i - 1])}
           </Pool>
         ))}
         <Pool>{JSON.stringify(this.state, null, 4)}</Pool>

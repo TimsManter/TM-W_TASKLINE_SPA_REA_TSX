@@ -66,6 +66,7 @@ const taskTargetSpec: DropTargetSpec<P> = {
 
     if (dragTaskSpec.index === hoverTaskSpec.index &&
     dragTaskSpec.poolIndex === hoverTaskSpec.poolIndex) { return; }
+    if (props.id === -1) { return; } // dummy task
     props.moveTask(dragTaskSpec, hoverTaskSpec);
 
     /* if swap when hover
