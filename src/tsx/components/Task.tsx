@@ -43,7 +43,9 @@ const taskSourceSpec: DragSourceSpec<P> = {
   }
 };
 
-const taskCollector = (connect: DragSourceConnector, monitor: DragSourceMonitor) => {
+const taskCollector = (
+  connect: DragSourceConnector,
+  monitor: DragSourceMonitor) => {
   return {
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging()
@@ -58,9 +60,8 @@ const taskTargetSpec: DropTargetSpec<P> = {
       poolIndex: props.poolIndex
     };
 
-    if (dragTaskSpec === hoverTaskSpec) {
-      return;
-    }
+    if (dragTaskSpec.index === hoverTaskSpec.index &&
+    dragTaskSpec.poolIndex === hoverTaskSpec.poolIndex) { return; }
     
     props.moveTask(dragTaskSpec, hoverTaskSpec);
     dragTaskSpec = hoverTaskSpec;

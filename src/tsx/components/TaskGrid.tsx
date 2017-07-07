@@ -49,14 +49,16 @@ export default class TaskGrid extends React.Component<P, S> {
     };
   }
 
-  moveTask?(dragTask: TaskSpec, hoverTask: TaskSpec) {/*
-    let newTasks = this.state.tasks.slice();
-    const tmpTask = newTasks[dragIndex];
-    newTasks[dragIndex] = newTasks[hoverIndex];
-    newTasks[hoverIndex] = tmpTask;
-    this.setState({
-      tasks: newTasks
-    });*/
+  moveTask?(dragTask: TaskSpec, hoverTask: TaskSpec) {
+    const newPools = this.state.pools.slice();
+    const hoverPool: TPool = newPools[hoverTask.poolIndex];
+    const dragPool: TPool = newPools[dragTask.poolIndex];
+
+    const tmpTask = hoverPool.tasks[hoverTask.index];
+    hoverPool.tasks[hoverTask.index] = dragPool.tasks[dragTask.index];
+    dragPool.tasks[dragTask.index] = tmpTask;
+    
+    this.setState({ pools: newPools });
   }
 
   render(): JSX.Element | null | false {
