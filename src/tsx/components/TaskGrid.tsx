@@ -54,12 +54,6 @@ export default class TaskGrid extends React.Component<P, S> {
     const hoverPool: TPool = newPools[hoverTask.poolIndex];
     const dragPool: TPool = newPools[dragTask.poolIndex];
 
-    // You
-    const tmpTask = hoverPool.tasks[hoverTask.index];
-    hoverPool.tasks[hoverTask.index] = dragPool.tasks[dragTask.index];
-    dragPool.tasks[dragTask.index] = tmpTask;
-
-    // The guy she told you to not worry about
     [hoverPool.tasks[hoverTask.index], dragPool.tasks[dragTask.index]] =
     [dragPool.tasks[dragTask.index], hoverPool.tasks[hoverTask.index]];
     
@@ -78,7 +72,7 @@ export default class TaskGrid extends React.Component<P, S> {
                 poolIndex={i}
                 id={task.id}
                 moveTask={this.moveTask}>
-                {task.id}
+                {task.content}
               </Task>
             ))}
           </Pool>

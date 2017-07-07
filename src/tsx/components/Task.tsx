@@ -22,6 +22,8 @@ interface P {
   id: number;
   size?: number;
   isDragging?: boolean;
+  canDrop?: boolean;
+  isOver?: boolean;
   connectDragSource?: ConnectDragSource;
   connectDropTarget?: ConnectDropTarget;
   moveTask?: (dragTask: TaskSpec, hoverTask: TaskSpec) => void;
@@ -54,7 +56,7 @@ const taskCollector = (
 
 const taskTargetSpec: DropTargetSpec<P> = {
   hover(props, monitor, component) {
-    let dragTaskSpec = monitor.getItem() as TaskSpec;
+    const dragTaskSpec = monitor.getItem() as TaskSpec;
     const hoverTaskSpec: TaskSpec = {
       index: props.index,
       poolIndex: props.poolIndex
@@ -64,12 +66,15 @@ const taskTargetSpec: DropTargetSpec<P> = {
     dragTaskSpec.poolIndex === hoverTaskSpec.poolIndex) { return; }
     
     props.moveTask(dragTaskSpec, hoverTaskSpec);
-    dragTaskSpec = hoverTaskSpec;
+    (monitor.getItem() as TaskSpec).index = hoverTaskSpec.index;
+    (monitor.getItem() as TaskSpec).poolIndex = hoverTaskSpec.poolIndex;
   },
 };
 
-@DropTarget("task", taskTargetSpec, connect => ({
+@DropTarget("task", taskTargetSpec, (connect, monitor) => ({
   connectDropTarget: connect.dropTarget(),
+  canDrop: monitor.canDrop(),
+  isOver: monitor.isOver()
 }))
 @DragSource("task", taskSourceSpec, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
@@ -85,9 +90,20 @@ export default class Task extends React.Component<P, S> {
   }
 
   render(): JSX.Element | null | false {
-    const { connectDragSource, connectDropTarget, isDragging } = this.props;
+    const {
+      connectDragSource,
+      connectDropTarget,
+      isDragging,
+      canDrop,
+      isOver
+    } = this.props;
+
+    let opacity: number = 1;
+    if (isDragging) { opacity = 0; }
+    else if (isOver) { opacity = 0.5; }
+      
     return connectDragSource(connectDropTarget(
-      <div>
+      <div style={{ opacity }}>
         <Panel className={"task-wrapper task-width-" + this.props.size}>
           {this.props.children}
         </Panel>
