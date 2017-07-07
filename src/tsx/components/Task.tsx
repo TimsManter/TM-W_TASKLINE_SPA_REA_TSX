@@ -19,6 +19,7 @@ import {
 interface P {
   index: number;
   poolIndex: number;
+  parentId?: number;
   id: number;
   size?: number;
   isDragging?: boolean;
