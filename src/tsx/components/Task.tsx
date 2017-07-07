@@ -56,7 +56,8 @@ const taskCollector = (
 };
 
 const taskTargetSpec: DropTargetSpec<P> = {
-  hover(props, monitor, component) {
+  //hover(props, monitor, component) { // if swap when hover
+  drop(props, monitor, component) {
     const dragTaskSpec = monitor.getItem() as TaskSpec;
     const hoverTaskSpec: TaskSpec = {
       index: props.index,
@@ -65,10 +66,11 @@ const taskTargetSpec: DropTargetSpec<P> = {
 
     if (dragTaskSpec.index === hoverTaskSpec.index &&
     dragTaskSpec.poolIndex === hoverTaskSpec.poolIndex) { return; }
-    
     props.moveTask(dragTaskSpec, hoverTaskSpec);
+
+    /* if swap when hover
     (monitor.getItem() as TaskSpec).index = hoverTaskSpec.index;
-    (monitor.getItem() as TaskSpec).poolIndex = hoverTaskSpec.poolIndex;
+    (monitor.getItem() as TaskSpec).poolIndex = hoverTaskSpec.poolIndex;*/
   },
 };
 
