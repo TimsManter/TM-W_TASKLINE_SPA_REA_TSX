@@ -6,14 +6,16 @@
       "request": "launch",
       "name": "Launch Chrome against localhost",
       "url": "http://localhost:8080",
-      "webRoot": "${workspaceRoot}"
+      "webRoot": "${workspaceRoot}/dist",
+      "runtimeExecutable": "vivaldi-snapshot"
     },
     {
       "type": "chrome",
       "request": "attach",
       "name": "Attach to Chrome",
       "port": 9222,
-      "webRoot": "${workspaceRoot}"
-    }
+      "webRoot": "${workspaceRoot}/dist",
+      "url": "http://localhost:8080"
+    } // --remote-debugging-port=9222
   ]
 }
