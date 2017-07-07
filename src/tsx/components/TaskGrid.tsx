@@ -6,11 +6,18 @@ import HTML5Backend from "react-dnd-html5-backend";
 import Pool from "./Pool";
 import Task from "./Task";
 
+interface TTask {
+  id: number;
+  content: string;
+}
+interface TPool {
+  id: number;
+  tasks: TTask[];
+}
+
 interface P { }
 interface S {
-  tasks: {
-    id: number;
-  }[];
+  pools: TPool[];
 }
 
 @DragDropContext(HTML5Backend)
@@ -19,44 +26,50 @@ export default class TaskGrid extends React.Component<P, S> {
     super();
     this.moveTask = this.moveTask.bind(this);
     this.state = {
-      tasks: [
+      pools: [
         {
-          id: 1
-        }, {
-          id: 2
-        }, {
-          id: 3
-        }, {
-          id: 4
+          id: 1,
+          tasks: [
+            { id: 1, content: "Task 1" },
+            { id: 2, content: "Task 2" },
+            { id: 3, content: "Task 3" },
+            { id: 4, content: "Task 4" },
+          ]
+        },
+        {
+          id: 1,
+          tasks: [
+            { id: 5, content: "Task 5" },
+            { id: 6, content: "Task 6" },
+            { id: 7, content: "Task 7" },
+            { id: 8, content: "Task 8" },
+          ]
         }
       ]
     };
   }
 
-  moveTask?(dragIndex: number, hoverIndex: number) {
+  moveTask?(dragIndex: number, hoverIndex: number) {/*
     let newTasks = this.state.tasks.slice();
     const tmpTask = newTasks[dragIndex];
     newTasks[dragIndex] = newTasks[hoverIndex];
     newTasks[hoverIndex] = tmpTask;
     this.setState({
       tasks: newTasks
-    });
+    });*/
   }
 
   render(): JSX.Element | null | false {
-    const { tasks } = this.state;
+    const pools = this.state.pools.slice();
     return (
       <div>
-        <Pool>
-          {tasks.map((task, i) => (
-            <Task key={i} index={i} id={task.id} moveTask={this.moveTask}>{task.id}</Task>
-          ))}
-        </Pool>
-        <Pool>
-          <Task index={1} id={1} size={1}>Hehe</Task>
-          <Task index={2} id={2} size={1}>Hehe</Task>
-          <Task index={3} id={3} size={1}>Hehe</Task>
-        </Pool>
+        {pools.map((pool, i) => (
+          <Pool key={i}>
+            {pool.tasks.map((task, i) => (
+              <Task key={i} index={i} id={task.id} moveTask={this.moveTask}>{task.id}</Task>
+            ))}
+          </Pool>
+        ))}
       </div>
     );
   }
