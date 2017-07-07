@@ -27,9 +27,9 @@ export interface P {
 }
 export interface S { }
 
-const taskSpec: DragSourceSpec<P> = {
-  beginDrag(props: P) {
-    return {};
+const taskSourceSpec: DragSourceSpec<P> = {
+  beginDrag(props: P, monitor: DragSourceMonitor, component: Task) {
+    return { index: props.index };
   }
 };
 
@@ -40,57 +40,27 @@ const taskCollector = (connect: DragSourceConnector, monitor: DragSourceMonitor)
   };
 };
 
-const taskTarget: DropTargetSpec<P> = {
+const taskTargetSpec: DropTargetSpec<P> = {
   hover(props, monitor, component) {
-    const dragIndex = (monitor.getItem() as {index: number}).index;
+    const dragItem = monitor.getItem() as {index: number};
+    const dragIndex = dragItem.index;
     const hoverIndex = props.index;
 
     // Don't replace items with themselves
     if (dragIndex === hoverIndex) {
       return;
     }
-
-    // Determine rectangle on screen
-    const hoverBoundingRect = ReactDOM.findDOMNode(component).getBoundingClientRect();
-
-    // Get vertical middle
-    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-
-    // Determine mouse position
-    const clientOffset = monitor.getClientOffset();
-
-    // Get pixels to the top
-    const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-
-    // Only perform the move when the mouse has crossed half of the items height
-    // When dragging downwards, only move when the cursor is below 50%
-    // When dragging upwards, only move when the cursor is above 50%
-
-    // Dragging downwards
-    if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-      return;
-    }
-
-    // Dragging upwards
-    if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-      return;
-    }
-
+    
     // Time to actually perform the action
     props.moveTask(dragIndex, hoverIndex);
-
-    // Note: we're mutating the monitor item here!
-    // Generally it's better to avoid mutations,
-    // but it's good here for the sake of performance
-    // to avoid expensive index searches.
-    (monitor.getItem() as {index: number}).index = hoverIndex;
+    dragItem.index = hoverIndex;
   },
 };
 
-@DropTarget("task", taskTarget, connect => ({
+@DropTarget("task", taskTargetSpec, connect => ({
   connectDropTarget: connect.dropTarget(),
 }))
-@DragSource("task", taskSpec, (connect, monitor) => ({
+@DragSource("task", taskSourceSpec, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging(),
 }))

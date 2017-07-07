@@ -34,12 +34,12 @@ export default class TaskGrid extends React.Component<P, S> {
   }
 
   moveTask?(dragIndex: number, hoverIndex: number) {
-    const { tasks } = this.state;
-    const tmpTask = tasks[dragIndex];
-    tasks[dragIndex] = tasks[hoverIndex];
-    tasks[hoverIndex] = tmpTask;
+    let newTasks = this.state.tasks.slice();
+    const tmpTask = newTasks[dragIndex];
+    newTasks[dragIndex] = newTasks[hoverIndex];
+    newTasks[hoverIndex] = tmpTask;
     this.setState({
-      tasks: tasks
+      tasks: newTasks
     });
   }
 
@@ -49,7 +49,7 @@ export default class TaskGrid extends React.Component<P, S> {
       <div>
         <Pool>
           {tasks.map((task, i) => (
-            <Task key={i} index={i} id={i} moveTask={this.moveTask}>{task.id}</Task>
+            <Task key={i} index={i} id={task.id} moveTask={this.moveTask}>{task.id}</Task>
           ))}
         </Pool>
         <Pool>
