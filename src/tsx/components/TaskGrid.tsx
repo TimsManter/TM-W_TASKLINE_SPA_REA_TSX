@@ -30,7 +30,7 @@ const calcSize = (grid: TaskGrid, taskId: number, poolIndex: number): number => 
       return task.parentId === taskId;
     }).length;
   }
-  return count;
+  return count === 0 ? 1 : count;
 };
 
 @DragDropContext(HTML5Backend)
