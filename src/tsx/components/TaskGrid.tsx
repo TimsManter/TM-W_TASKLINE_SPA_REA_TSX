@@ -77,6 +77,7 @@ export default class TaskGrid extends React.Component<P, S> {
             ))}
           </Pool>
         ))}
+        <Pool>{JSON.stringify(this.state, null, 4)}</Pool>
       </div>
     );
   }
