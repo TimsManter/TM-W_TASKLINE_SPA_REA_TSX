@@ -16,20 +16,30 @@ import {
   ConnectDropTarget
 } from "react-dnd";
 
-export interface P {
+interface P {
   index: number;
+  poolIndex: number;
   id: number;
   size?: number;
   isDragging?: boolean;
   connectDragSource?: ConnectDragSource;
   connectDropTarget?: ConnectDropTarget;
-  moveTask?: (dragIndex: number, hoverIndex: number) => void;
+  moveTask?: (dragTask: TaskSpec, hoverTask: TaskSpec) => void;
 }
-export interface S { }
+interface S { }
+
+export interface TaskSpec {
+  index: number;
+  poolIndex: number;
+}
 
 const taskSourceSpec: DragSourceSpec<P> = {
   beginDrag(props: P, monitor: DragSourceMonitor, component: Task) {
-    return { index: props.index };
+    const taskSpec: TaskSpec = {
+      index: props.index,
+      poolIndex: props.poolIndex
+    };
+    return taskSpec;
   }
 };
 
@@ -42,18 +52,18 @@ const taskCollector = (connect: DragSourceConnector, monitor: DragSourceMonitor)
 
 const taskTargetSpec: DropTargetSpec<P> = {
   hover(props, monitor, component) {
-    const dragItem = monitor.getItem() as {index: number};
-    const dragIndex = dragItem.index;
-    const hoverIndex = props.index;
+    let dragTaskSpec = monitor.getItem() as TaskSpec;
+    const hoverTaskSpec: TaskSpec = {
+      index: props.index,
+      poolIndex: props.poolIndex
+    };
 
-    // Don't replace items with themselves
-    if (dragIndex === hoverIndex) {
+    if (dragTaskSpec === hoverTaskSpec) {
       return;
     }
     
-    // Time to actually perform the action
-    props.moveTask(dragIndex, hoverIndex);
-    dragItem.index = hoverIndex;
+    props.moveTask(dragTaskSpec, hoverTaskSpec);
+    dragTaskSpec = hoverTaskSpec;
   },
 };
 

@@ -4,7 +4,7 @@ import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 
 import Pool from "./Pool";
-import Task from "./Task";
+import Task, { TaskSpec } from "./Task";
 
 interface TTask {
   id: number;
@@ -49,7 +49,7 @@ export default class TaskGrid extends React.Component<P, S> {
     };
   }
 
-  moveTask?(dragIndex: number, hoverIndex: number) {/*
+  moveTask?(dragTask: TaskSpec, hoverTask: TaskSpec) {/*
     let newTasks = this.state.tasks.slice();
     const tmpTask = newTasks[dragIndex];
     newTasks[dragIndex] = newTasks[hoverIndex];
@@ -65,8 +65,14 @@ export default class TaskGrid extends React.Component<P, S> {
       <div>
         {pools.map((pool, i) => (
           <Pool key={i}>
-            {pool.tasks.map((task, i) => (
-              <Task key={i} index={i} id={task.id} moveTask={this.moveTask}>{task.id}</Task>
+            {pool.tasks.map((task, j) => (
+              <Task key={j}
+                index={j}
+                poolIndex={i}
+                id={task.id}
+                moveTask={this.moveTask}>
+                {task.id}
+              </Task>
             ))}
           </Pool>
         ))}
