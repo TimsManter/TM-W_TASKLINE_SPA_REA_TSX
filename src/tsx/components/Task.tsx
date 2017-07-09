@@ -71,8 +71,8 @@ const taskTargetSpec: DropTargetSpec<P> = {
     };
 
     if (dragTaskSpec.index === hoverTaskSpec.index &&
-    dragTaskSpec.poolIndex === hoverTaskSpec.poolIndex) { return; }
-    if (props.id === -1) { return; } // dummy task
+      dragTaskSpec.poolIndex === hoverTaskSpec.poolIndex) { return; }
+    
     props.moveTask(dragTaskSpec, hoverTaskSpec);
 
     /* if swap when hover
@@ -110,8 +110,8 @@ export default class Task extends React.Component<P, S> {
     } = this.props;
 
     let opacity: number = 1;
-    if (isDragging || id === -1) { opacity = 0; }
-    else if (isOver) { opacity = 0.5; }
+    if (isOver) { opacity = 0.5; }
+    else if (isDragging || id === -1) { opacity = 0; }
       
     return connectDragSource(connectDropTarget(
       <div style={{ opacity }}>

@@ -66,7 +66,7 @@ const renderChildTasks = (
         index={i}
         poolIndex={poolIndex}
         id={-1}
-        parentId={parentTask.id}  
+        parentId={parentTask.id}
         moveTask={grid.moveTask}>
       </Task>
       );
