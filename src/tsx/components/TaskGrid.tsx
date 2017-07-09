@@ -112,12 +112,17 @@ export default class TaskGrid extends React.Component<P, S> {
     const hoverPool: TPool = newPools[hoverTask.poolIndex];
     const dragPool: TPool = newPools[dragTask.poolIndex];
 
-    if (hoverPool.id === dragPool.id) { // same pool
-      if (hoverTask.id > -1) {
-        [hoverPool.tasks[hoverTask.index], dragPool.tasks[dragTask.index]] =
-        [dragPool.tasks[dragTask.index], hoverPool.tasks[hoverTask.index]];
-        
-      } else {
+    if (hoverTask.poolIndex === dragTask.poolIndex) { // same pool
+      if (hoverTask.id > -1) { // normal task
+        if (hoverTask.poolIndex === 0) { // master pool
+          [hoverPool.tasks[hoverTask.index], dragPool.tasks[dragTask.index]] =
+          [dragPool.tasks[dragTask.index], hoverPool.tasks[hoverTask.index]];
+        }
+        else { // slave pool
+          [hoverPool.tasks[hoverTask.index].parentId, dragPool.tasks[dragTask.index].parentId] =
+          [dragPool.tasks[dragTask.index].parentId, hoverPool.tasks[hoverTask.index].parentId];
+        }
+      } else { // dummy task
         hoverPool.tasks[dragTask.index].parentId = hoverTask.parentId;
       }
       this.setState({ pools: newPools });
