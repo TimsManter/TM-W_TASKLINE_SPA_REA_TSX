@@ -112,6 +112,7 @@ export default class Task extends React.Component<P, S> {
     let opacity: number = 1;
     if (isOver) { opacity = 0.5; }
     else if (isDragging || id === -1) { opacity = 0; }
+    else { opacity = 1; }
       
     return connectDragSource(connectDropTarget(
       <div style={{ opacity }}>
