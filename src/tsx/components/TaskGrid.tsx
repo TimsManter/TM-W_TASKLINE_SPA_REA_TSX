@@ -78,6 +78,16 @@ const renderChildTasks = (
   return tasks;
 };
 
+const swapTasks = (pool: TPool, tSpec1: TaskSpec, tSpec2: TaskSpec) => {
+  const tasks: TTask[] = pool.tasks;
+  const task1: TTask = tasks.filter(t => t.id === tSpec1.id)[0];
+  const task2: TTask = tasks.filter(t => t.id === tSpec2.id)[0];
+  if (task1 === undefined || task2 === undefined) { return false; }
+  const tIndex1: number = tasks.indexOf(task1);
+  const tIndex2: number = tasks.indexOf(task2);
+  [tasks[tIndex1], tasks[tIndex2]] = [[tasks[tIndex2], tasks[tIndex1]];
+};
+
 @DragDropContext(HTML5Backend)
 export default class TaskGrid extends React.Component<P, S> {
   constructor() {
@@ -107,26 +117,28 @@ export default class TaskGrid extends React.Component<P, S> {
     };
   }
 
-  moveTask?(dragTask: TaskSpec, hoverTask: TaskSpec) {
+  moveTask?(dTaskSpec: TaskSpec, hTaskSpec: TaskSpec) {
     const newPools = this.state.pools.slice();
-    const hoverPool: TPool = newPools[hoverTask.poolIndex];
-    const dragPool: TPool = newPools[dragTask.poolIndex];
+    const hPool: TPool = newPools[hTaskSpec.poolIndex];
+    const hTask: number = hPool.tasks.filter(t => t.id === hTaskSpec.id);
+    const dPool: TPool = newPools[dTaskSpec.poolIndex];
+    const dTask: number
 
-    if (hoverTask.poolIndex === dragTask.poolIndex) { // same pool
-      if (hoverTask.id > -1) { // normal task
-        if (hoverTask.poolIndex === 0) { // master pool, swap tasks
-          [hoverPool.tasks[hoverTask.index], dragPool.tasks[dragTask.index]] =
-          [dragPool.tasks[dragTask.index], hoverPool.tasks[hoverTask.index]];
+    if (hTaskSpec.poolIndex === dTaskSpec.poolIndex) { // same pool
+      if (hTaskSpec.id > -1) { // normal task
+        if (hTaskSpec.poolIndex === 0) { // master pool, swap tasks
+          [hPool.tasks.find, dPool.tasks[dTaskSpec.index]] =
+          [dPool.tasks[dTaskSpec.index], hPool.tasks[hTaskSpec.index]];
         }
         else { // slave pool, swap parentIds
-          [hoverPool.tasks[hoverTask.index].parentId, dragPool.tasks[dragTask.index].parentId] =
-          [dragPool.tasks[dragTask.index].parentId, hoverPool.tasks[hoverTask.index].parentId];
+          [hPool.tasks[hTaskSpec.index].parentId, dPool.tasks[dTaskSpec.index].parentId] =
+          [dPool.tasks[dTaskSpec.index].parentId, hPool.tasks[hTaskSpec.index].parentId];
         }
       } else { // dummy task
-        dragPool.tasks[dragTask.index].parentId = hoverTask.parentId;
+        dPool.tasks[dTaskSpec.index].parentId = hTaskSpec.parentId;
       }
-    } else if (hoverTask.poolIndex === dragTask.poolIndex - 1) { // pool above
-      dragPool.tasks[dragTask.index].parentId = hoverPool.tasks[hoverTask.index].id;
+    } else if (hTaskSpec.poolIndex === dTaskSpec.poolIndex - 1) { // pool above
+      dPool.tasks[dTaskSpec.index].parentId = hPool.tasks[hTaskSpec.index].id;
     }
     this.setState({ pools: newPools });
   }
