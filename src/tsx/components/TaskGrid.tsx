@@ -62,15 +62,14 @@ const renderChildTasks = (
     }
     else { // dummy task (placeholder)
       tasks.push(
-      <Task key={i}
-        index={i}
+      <Task key={100-i}
+        index={-1}
         poolIndex={poolIndex}
         id={-1}
         parentId={parentTask.id}
         moveTask={grid.moveTask}>
       </Task>
       );
-      i++;
     }
   });
   return tasks;
@@ -110,15 +109,15 @@ export default class TaskGrid extends React.Component<P, S> {
     const hoverPool: TPool = newPools[hoverTask.poolIndex];
     const dragPool: TPool = newPools[dragTask.poolIndex];
 
-    if (hoverPool.id === dragPool.id) {
+    if (hoverPool.id === dragPool.id) { // same pool
       if (hoverTask.id > -1) {
         [hoverPool.tasks[hoverTask.index], dragPool.tasks[dragTask.index]] =
         [dragPool.tasks[dragTask.index], hoverPool.tasks[hoverTask.index]];
         
-        this.setState({ pools: newPools });
       } else {
         hoverPool.tasks[dragTask.index].parentId = hoverTask.parentId;
       }
+      this.setState({ pools: newPools });
     }
   }
 
