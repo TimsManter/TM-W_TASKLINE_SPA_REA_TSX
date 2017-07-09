@@ -65,7 +65,7 @@ const taskTargetSpec: DropTargetSpec<P> = {
     const dragTaskSpec = monitor.getItem() as TaskSpec;
     const hoverTaskSpec: TaskSpec = {
       id: props.id,
-      parentId: props.id,
+      parentId: props.parentId,
       index: props.index,
       poolIndex: props.poolIndex
     };
