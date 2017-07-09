@@ -42,12 +42,13 @@ const renderChildTasks = (
   
   const tasks: JSX.Element[] = [];
   let i = 0;
+  let k = 0;
   parentPool.tasks.forEach(parentTask => {
     const filteredTasks = pool.tasks.filter(task => task.parentId === parentTask.id);
     if (filteredTasks.length > 0) {
       filteredTasks.forEach((task) => {
         tasks.push(
-          <Task key={i}
+          <Task key={k}
             index={i}
             poolIndex={poolIndex}
             id={task.id}
@@ -58,11 +59,12 @@ const renderChildTasks = (
           </Task>
         );
         i++;
+        k++;
       });
     }
     else { // dummy task (placeholder)
       tasks.push(
-      <Task key={100-i}
+      <Task key={k}
         index={-1}
         poolIndex={poolIndex}
         id={-1}
@@ -70,6 +72,7 @@ const renderChildTasks = (
         moveTask={grid.moveTask}>
       </Task>
       );
+      k++;
     }
   });
   return tasks;
