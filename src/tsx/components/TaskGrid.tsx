@@ -24,6 +24,7 @@ interface S {
 }
 
 const calcSize = (grid: TaskGrid, taskId: number, poolIndex: number): number => {
+  if (taskId === -1 || poolIndex === undefined) { return 1; }
   let count = 1;
   if (grid.state.pools.length > poolIndex + 1) {
     count = grid.state.pools[poolIndex + 1].tasks.filter(task => {

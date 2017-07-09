@@ -99,11 +99,12 @@ export default class Task extends React.Component<P, S> {
       connectDropTarget,
       isDragging,
       canDrop,
-      isOver
+      isOver,
+      id
     } = this.props;
 
     let opacity: number = 1;
-    if (isDragging) { opacity = 0; }
+    if (isDragging || id === -1) { opacity = 0; }
     else if (isOver) { opacity = 0.5; }
       
     return connectDragSource(connectDropTarget(
