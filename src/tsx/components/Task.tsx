@@ -32,6 +32,7 @@ interface P {
 interface S { }
 
 export interface TaskSpec {
+  id: number;
   index: number;
   poolIndex: number;
 }
@@ -39,6 +40,7 @@ export interface TaskSpec {
 const taskSourceSpec: DragSourceSpec<P> = {
   beginDrag(props: P, monitor: DragSourceMonitor, component: Task) {
     const taskSpec: TaskSpec = {
+      id: props.id,
       index: props.index,
       poolIndex: props.poolIndex
     };
@@ -60,6 +62,7 @@ const taskTargetSpec: DropTargetSpec<P> = {
   drop(props, monitor, component) { // if swap when drop
     const dragTaskSpec = monitor.getItem() as TaskSpec;
     const hoverTaskSpec: TaskSpec = {
+      id: props.id,
       index: props.index,
       poolIndex: props.poolIndex
     };

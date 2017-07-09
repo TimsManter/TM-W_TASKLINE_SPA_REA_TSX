@@ -60,12 +60,13 @@ const renderChildTasks = (
         i++;
       });
     }
-    else {
+    else { // dummy task (placeholder)
       tasks.push(
       <Task key={i}
         index={i}
         poolIndex={poolIndex}
         id={-1}
+        parentId={parentTask.id}  
         moveTask={grid.moveTask}>
       </Task>
       );
