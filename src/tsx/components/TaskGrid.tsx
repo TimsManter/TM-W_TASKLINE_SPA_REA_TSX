@@ -110,10 +110,12 @@ export default class TaskGrid extends React.Component<P, S> {
     const hoverPool: TPool = newPools[hoverTask.poolIndex];
     const dragPool: TPool = newPools[dragTask.poolIndex];
 
-    [hoverPool.tasks[hoverTask.index], dragPool.tasks[dragTask.index]] =
-    [dragPool.tasks[dragTask.index], hoverPool.tasks[hoverTask.index]];
-    
-    this.setState({ pools: newPools });
+    if (hoverPool.id === dragPool.id) {
+      [hoverPool.tasks[hoverTask.index], dragPool.tasks[dragTask.index]] =
+      [dragPool.tasks[dragTask.index], hoverPool.tasks[hoverTask.index]];
+      
+      this.setState({ pools: newPools });
+    }
   }
 
   render(): JSX.Element | null | false {
