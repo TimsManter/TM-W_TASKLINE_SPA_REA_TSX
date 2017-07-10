@@ -77,17 +77,19 @@ const taskTargetSpec: DropTargetSpec<P> = {
   },
   hover(props, monitor, component) {
     if (props.id === -1) { return; }
-    const taskRect = ReactDOM.findDOMNode(component).getBoundingClientRect();
-    const cursorOffset = monitor.getClientOffset();
-    const offset = 15;
-    if (cursorOffset.x > taskRect.left &&
-      cursorOffset.x < taskRect.left + offset) {
-      component.setState({ hover: "left" });
-    } else if (cursorOffset.x < taskRect.right &&
-      cursorOffset.x > taskRect.right - offset) {
-      component.setState({ hover: "right" });
-    } else { component.setState({ hover: undefined }); }
+    component.setState({ hover: checkTaskPosition(monitor, component) });
   }
+};
+
+const checkTaskPosition = (monitor: DropTargetMonitor, component: Task): string | undefined => {
+  const taskRect = ReactDOM.findDOMNode(component).getBoundingClientRect();
+  const cursorOffset = monitor.getClientOffset();
+  const offset = 15;
+  if (cursorOffset.x > taskRect.left &&
+    cursorOffset.x < taskRect.left + offset) { return "left"; }
+  else if (cursorOffset.x < taskRect.right &&
+    cursorOffset.x > taskRect.right - offset) { return "right"; }
+  else { return undefined; }
 };
 
 @DropTarget("task", taskTargetSpec, (connect, monitor) => ({
