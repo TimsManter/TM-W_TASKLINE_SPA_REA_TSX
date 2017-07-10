@@ -132,10 +132,10 @@ const insertTask = (
   position: string | undefined): boolean => {
   const tasks: TTask[] = pool.tasks;
   const tIndexFrom: number = getIndex(pool, tSpecFrom);
+  const taskToMove: TTask = tasks.splice(tIndexFrom, 1)[0];
   let tIndexTo: number = getIndex(pool, tSpecTo);
   if (tIndexFrom === undefined || tIndexTo === undefined) { return false; }
   if (position === "right") { tIndexTo++; }
-  const taskToMove: TTask = tasks.splice(tIndexFrom, 1)[0];
   tasks.splice(tIndexTo, 0, taskToMove);
   if (tSpecFrom.parentId !== tSpecTo.parentId) {
     tasks[tIndexTo].parentId = tSpecTo.parentId;
