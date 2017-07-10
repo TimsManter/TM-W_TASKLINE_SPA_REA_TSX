@@ -1,3 +1,4 @@
+/* IMPORTS */
 import * as React from "react";
 import { Grid, Row, Col } from "react-bootstrap";
 import { DragDropContext } from "react-dnd";
@@ -6,6 +7,7 @@ import HTML5Backend from "react-dnd-html5-backend";
 import Pool from "./Pool";
 import Task, { TaskSpec } from "./Task";
 
+/* INTERFSCES */
 interface TTask {
   id: number;
   parentId?: number;
@@ -23,6 +25,7 @@ interface S {
   pools: TPool[];
 }
 
+/* METHODS */
 const calcSize = (grid: TaskGrid, taskId: number, poolIndex: number): number => {
   if (taskId === -1 || poolIndex === undefined) { return 1; }
   let count = 1;
@@ -89,6 +92,7 @@ const swapTasks = (pool: TPool, tSpec1: TaskSpec, tSpec2: TaskSpec): boolean => 
   return true;
 };
 
+/* CLASS */
 @DragDropContext(HTML5Backend)
 export default class TaskGrid extends React.Component<P, S> {
   constructor() {
