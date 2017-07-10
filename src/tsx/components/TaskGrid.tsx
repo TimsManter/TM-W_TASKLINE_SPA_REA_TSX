@@ -127,6 +127,22 @@ const swapTasks = (
   return true;
 };
 
+const insertTask = (
+  pool: TPool,
+  tSpecFrom: TaskSpec,
+  tSpecTo: TaskSpec,
+  position: string | undefined): boolean => {
+  const tasks: TTask[] = pool.tasks;
+  const taskFrom: TTask = tasks.filter(t => t.id === tSpecFrom.id)[0];
+  const taskTo: TTask = tasks.filter(t => t.id === tSpecTo.id)[0];
+  if (taskFrom === undefined || taskTo === undefined) { return false; }
+  const tIndexFrom: number = tasks.indexOf(taskFrom);
+  let tIndexTo: number = tasks.indexOf(taskTo);
+  if (position === "right") { tIndexTo++; }
+  const taskToMove: TTask = tasks.splice(tIndexFrom, 1)[0];
+  tasks.splice(tIndexTo, 0, taskToMove);
+};
+
 const changeParentId = (
   pool: TPool,
   tSpec: TaskSpec,
@@ -178,16 +194,26 @@ export default class TaskGrid extends React.Component<P, S> {
     const hPool: TPool = newPools[hTaskSpec.poolIndex];
     const dPool: TPool = newPools[dTaskSpec.poolIndex];
 
-    if (hPool === dPool) {
-      if (hTaskSpec.id > 0) { // normal task
-        swapTasks(dPool, dTaskSpec, hTaskSpec);
-      } else { // dummy task
-        changeParentId(dPool, dTaskSpec, hTaskSpec.parentId);
+    if (position) {
+      if (hPool === dPool) {
+        insertTask(hPool, dTaskSpec, hTaskSpec, position);
+      } else if (dTaskSpec.id === 0) {
+        
+      } else {
+        // TODO: Add logic to move tasks between many pools
       }
-    } else if (hTaskSpec.poolIndex === dTaskSpec.poolIndex - 1) {
-      changeParentId(dPool, dTaskSpec, hTaskSpec);
     } else {
-      // TODO: Add logic to move tasks between many pools
+      if (hPool === dPool) {
+        if (hTaskSpec.id > 0) { // normal task
+          swapTasks(dPool, dTaskSpec, hTaskSpec);
+        } else { // dummy task
+          changeParentId(dPool, dTaskSpec, hTaskSpec.parentId);
+        }
+      } else if (hTaskSpec.poolIndex === dTaskSpec.poolIndex - 1) {
+        changeParentId(dPool, dTaskSpec, hTaskSpec);
+      } else {
+        // TODO: Add logic to move tasks between many pools
+      }
     }
     this.setState({ pools: newPools });
   }
