@@ -84,7 +84,10 @@ const renderChildTasks = (
   return tasks;
 };
 
-const swapTasks = (pool: TPool, tSpec1: TaskSpec, tSpec2: TaskSpec): boolean => {
+const swapTasks = (
+  pool: TPool,
+  tSpec1: TaskSpec,
+  tSpec2: TaskSpec): boolean => {
   const tasks: TTask[] = pool.tasks;
   const task1: TTask = tasks.filter(t => t.id === tSpec1.id)[0];
   const task2: TTask = tasks.filter(t => t.id === tSpec2.id)[0];
