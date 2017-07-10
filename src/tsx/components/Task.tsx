@@ -84,7 +84,7 @@ const taskTargetSpec: DropTargetSpec<P> = {
 const checkTaskPosition = (monitor: DropTargetMonitor, component: Task): string | undefined => {
   const taskRect = ReactDOM.findDOMNode(component).getBoundingClientRect();
   const cursorOffset = monitor.getClientOffset();
-  const offset = 15;
+  const offset = 30;
   if (cursorOffset.x > taskRect.left &&
     cursorOffset.x < taskRect.left + offset) { return "left"; }
   else if (cursorOffset.x < taskRect.right &&
