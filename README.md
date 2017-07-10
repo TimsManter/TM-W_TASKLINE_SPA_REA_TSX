@@ -17,3 +17,10 @@ TaskLine is simple frontend-only task board example created using React framewor
 ## Screenshots
 
 ![Main View](docs/screenshots/main.png)
+
+## Setup
+
+- Clone repository: `git clone https://github.com/TimsManter/TM-W_TASKLINE_SPA_REA_TSX.git`
+- Install npm packages: `npm install`
+- Make sure you have Webpack and Dev Server installed
+- Run dev server: `webpack-dev-server --open`
