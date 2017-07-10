@@ -1,3 +1,4 @@
+/* IMPORTS */
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Panel, Col, Clearfix, Button } from "react-bootstrap";
@@ -16,6 +17,7 @@ import {
   ConnectDropTarget
 } from "react-dnd";
 
+/* INTERFACES */
 interface P {
   index: number;
   poolIndex: number;
@@ -39,6 +41,7 @@ export interface TaskSpec {
   poolIndex: number;
 }
 
+/* METHODS */
 const taskSourceSpec: DragSourceSpec<P> = {
   beginDrag(props: P, monitor: DragSourceMonitor, component: Task) {
     const taskSpec: TaskSpec = {
@@ -96,6 +99,7 @@ const checkTaskPosition = (monitor: DropTargetMonitor, component: Task): string 
   else { return undefined; }
 };
 
+/* CLASS */
 @DropTarget("task", taskTargetSpec, (connect, monitor) => ({
   connectDropTarget: connect.dropTarget(),
   canDrop: monitor.canDrop(),
