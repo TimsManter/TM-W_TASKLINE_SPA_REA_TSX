@@ -141,6 +141,10 @@ const insertTask = (
   if (position === "right") { tIndexTo++; }
   const taskToMove: TTask = tasks.splice(tIndexFrom, 1)[0];
   tasks.splice(tIndexTo, 0, taskToMove);
+  if (tSpecFrom.parentId !== tSpecTo.parentId) {
+    tasks[tIndexTo-1].parentId = tSpecTo.parentId;
+  }
+  return true;
 };
 
 const changeParentId = (
