@@ -134,11 +134,32 @@ const insertTask = (
   const tIndexFrom: number = getIndex(pool, tSpecFrom);
   let tIndexTo: number = getIndex(pool, tSpecTo);
   if (tIndexFrom === undefined || tIndexTo === undefined) { return false; }
-  if (position === "left") { tIndexTo--; }
+  if (position === "right") { tIndexTo++; }
   const taskToMove: TTask = tasks.splice(tIndexFrom, 1)[0];
   tasks.splice(tIndexTo, 0, taskToMove);
   if (tSpecFrom.parentId !== tSpecTo.parentId) {
     tasks[tIndexTo].parentId = tSpecTo.parentId;
+  }
+  return true;
+};
+
+const insertNewTask = (
+  pool: TPool,
+  tSpec: TaskSpec,
+  id: number,
+  position?: string | undefined): boolean => {
+  const tasks: TTask[] = pool.tasks;
+  const newTask: TTask = {
+    id: id,
+    content: "New Task"
+  };
+  if (tSpec.parentId) { newTask.parentId = tSpec.parentId; }
+  if (position === undefined) { tasks.push(newTask); }
+  else {
+    let tIndexTo: number = getIndex(pool, tSpec);
+    if (tIndexTo === undefined) { return false; }
+    if (position === "right") { tIndexTo++; }
+    tasks.splice(tIndexTo, 0, newTask);
   }
   return true;
 };
@@ -163,6 +184,18 @@ const getIndex = (pool: TPool, spec: TaskSpec): number | undefined => {
   const task: TTask = pool.tasks.filter(t => t.id === spec.id)[0];
   if (task === undefined) { return undefined; }
   return pool.tasks.indexOf(task);
+};
+
+const getMaxId = (pools: TPool[]): number => {
+  let maxId = 0;
+  for (let p in pools) {
+    for (let t in pools[p].tasks) {
+      if (pools[p].tasks[t].id > maxId) {
+        maxId = pools[p].tasks[t].id;
+      }
+    }
+  }
+  return maxId;
 };
 
 /* CLASS */
@@ -201,7 +234,10 @@ export default class TaskGrid extends React.Component<P, S> {
     const dPool: TPool = newPools[dTaskSpec.poolIndex];
 
     if (position) {
-      if (hPool === dPool) {
+      if (dTaskSpec.id === 0) {
+        insertNewTask(hPool, hTaskSpec, getMaxId(newPools) + 1, position);
+      }
+      else if (hPool === dPool) {
         insertTask(hPool, dTaskSpec, hTaskSpec, position);
       } else if (dTaskSpec.id === 0) {
         
@@ -209,7 +245,10 @@ export default class TaskGrid extends React.Component<P, S> {
         // TODO: Add logic to move tasks between many pools
       }
     } else {
-      if (hPool === dPool) {
+      if (dTaskSpec.id === 0) {
+        insertNewTask(hPool, hTaskSpec, getMaxId(newPools) + 1);
+      }
+      else if (hPool === dPool) {
         if (hTaskSpec.id > 0) { // normal task
           swapTasks(dPool, dTaskSpec, hTaskSpec);
         } else { // dummy task
