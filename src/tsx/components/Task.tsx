@@ -27,7 +27,7 @@ interface P {
   isOver?: boolean;
   connectDragSource?: ConnectDragSource;
   connectDropTarget?: ConnectDropTarget;
-  moveTask?: (dragTask: TaskSpec, hoverTask: TaskSpec) => void;
+  moveTask?: (dragTask: TaskSpec, hoverTask: TaskSpec, position?: string | undefined) => void;
   hover?: string;
 }
 interface S { }
@@ -73,10 +73,11 @@ const taskTargetSpec: DropTargetSpec<P> = {
     if (dragTaskSpec.id === hoverTaskSpec.id &&
       dragTaskSpec.poolIndex === hoverTaskSpec.poolIndex) { return; }
     
-    props.moveTask(dragTaskSpec, hoverTaskSpec);
+    props.moveTask(dragTaskSpec, hoverTaskSpec, checkTaskPosition(monitor, component));
   },
   hover(props, monitor, component) {
     if (props.id === -1) { return; }
+    if (props.id === (monitor.getItem() as TaskSpec).id) { return; }
     component.setState({ hover: checkTaskPosition(monitor, component) });
   }
 };
