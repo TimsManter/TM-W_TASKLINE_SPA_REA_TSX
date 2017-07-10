@@ -35,6 +35,7 @@ interface S { }
 export interface TaskSpec {
   id: number;
   parentId: number;
+  index: number;
   poolIndex: number;
 }
 
@@ -43,6 +44,7 @@ const taskSourceSpec: DragSourceSpec<P> = {
     const taskSpec: TaskSpec = {
       id: props.id,
       parentId: props.parentId,
+      index: props.index,
       poolIndex: props.poolIndex
     };
     return taskSpec;
@@ -67,6 +69,7 @@ const taskTargetSpec: DropTargetSpec<P> = {
     const hoverTaskSpec: TaskSpec = {
       id: props.id,
       parentId: props.parentId,
+      index: props.index,
       poolIndex: props.poolIndex
     };
 
