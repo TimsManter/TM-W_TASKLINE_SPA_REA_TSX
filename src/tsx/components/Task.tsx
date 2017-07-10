@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Panel, Col, Clearfix } from "react-bootstrap";
+import { Panel, Col, Clearfix, Button } from "react-bootstrap";
 import {
   DragSource,
   DragSourceSpec,
@@ -74,6 +74,15 @@ const taskTargetSpec: DropTargetSpec<P> = {
     
     props.moveTask(dragTaskSpec, hoverTaskSpec);
   },
+  hover(props, monitor, component) {
+    const taskRect = ReactDOM.findDOMNode(component).getBoundingClientRect();
+    const cursorOffset = monitor.getClientOffset();
+    if (cursorOffset.x > taskRect.left && cursorOffset.x < taskRect.left + 10) {
+      console.log("left");
+    } else if (cursorOffset.x < taskRect.right && cursorOffset.x > taskRect.right - 10) {
+      console.log("right");
+    }
+  }
 };
 
 @DropTarget("task", taskTargetSpec, (connect, monitor) => ({
@@ -112,10 +121,11 @@ export default class Task extends React.Component<P, S> {
       
     return connectDragSource(connectDropTarget(
       <div style={{ opacity }}>
-        <Panel header={this.props.children}
+        {id === 0 && !isDragging ? <Button bsStyle="primary">New Task</Button> :
+        (<Panel header={this.props.children}
           className={"task-wrapper task-width-" + this.props.size}>
           {this.props.children}
-        </Panel>
+        </Panel>)}
       </div>
     ));
   }
