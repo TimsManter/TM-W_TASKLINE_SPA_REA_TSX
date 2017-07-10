@@ -1,6 +1,15 @@
 /* IMPORTS */
 import * as React from "react";
-import { Grid, Row, Col, Navbar, Nav, NavItem } from "react-bootstrap";
+import {
+  Grid,
+  Row,
+  Col,
+  Navbar,
+  Nav,
+  NavItem,
+  Button,
+  ButtonToolbar
+} from "react-bootstrap";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 
@@ -33,10 +42,11 @@ const renderNavbar = (): JSX.Element => {
         <a href="#">TaskLine</a>
       </Navbar.Brand>
     </Navbar.Header>
-    <Nav>
-      <NavItem eventKey={1} href="#">Link</NavItem>
-      <NavItem eventKey={2} href="#">Link</NavItem>
-    </Nav>
+    <Navbar.Collapse>
+      <Navbar.Form pullRight>
+        <Button bsStyle="primary">New Task</Button>
+      </Navbar.Form>
+    </Navbar.Collapse>
   </Navbar>);
 };
 
