@@ -30,7 +30,7 @@ const renderNavbar = (): JSX.Element => {
   return (<Navbar>
     <Navbar.Header>
       <Navbar.Brand>
-        <a href="#">React-Bootstrap</a>
+        <a href="#">TaskLine</a>
       </Navbar.Brand>
     </Navbar.Header>
     <Nav>
