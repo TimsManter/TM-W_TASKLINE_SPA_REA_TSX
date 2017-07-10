@@ -113,11 +113,9 @@ const swapTasks = (
   tSpec1: TaskSpec,
   tSpec2: TaskSpec): boolean => {
   const tasks: TTask[] = pool.tasks;
-  const task1: TTask = tasks.filter(t => t.id === tSpec1.id)[0];
-  const task2: TTask = tasks.filter(t => t.id === tSpec2.id)[0];
-  if (task1 === undefined || task2 === undefined) { return false; }
-  const tIndex1: number = tasks.indexOf(task1);
-  const tIndex2: number = tasks.indexOf(task2);
+  const tIndex1: number = getIndex(pool, tSpec1);
+  const tIndex2: number = getIndex(pool, tSpec2);
+  if (tIndex1 === undefined || tIndex2 === undefined) { return false; }
   if (tSpec1.poolIndex === 0 || tSpec1.parentId === tSpec2.parentId) {
     [tasks[tIndex1], tasks[tIndex2]] = [tasks[tIndex2], tasks[tIndex1]];
   } else {
@@ -133,16 +131,14 @@ const insertTask = (
   tSpecTo: TaskSpec,
   position: string | undefined): boolean => {
   const tasks: TTask[] = pool.tasks;
-  const taskFrom: TTask = tasks.filter(t => t.id === tSpecFrom.id)[0];
-  const taskTo: TTask = tasks.filter(t => t.id === tSpecTo.id)[0];
-  if (taskFrom === undefined || taskTo === undefined) { return false; }
-  const tIndexFrom: number = tasks.indexOf(taskFrom);
-  let tIndexTo: number = tasks.indexOf(taskTo);
-  if (position === "right") { tIndexTo++; }
+  const tIndexFrom: number = getIndex(pool, tSpecFrom);
+  let tIndexTo: number = getIndex(pool, tSpecTo);
+  if (tIndexFrom === undefined || tIndexTo === undefined) { return false; }
+  if (position === "left") { tIndexTo--; }
   const taskToMove: TTask = tasks.splice(tIndexFrom, 1)[0];
   tasks.splice(tIndexTo, 0, taskToMove);
   if (tSpecFrom.parentId !== tSpecTo.parentId) {
-    tasks[tIndexTo-1].parentId = tSpecTo.parentId;
+    tasks[tIndexTo].parentId = tSpecTo.parentId;
   }
   return true;
 };
