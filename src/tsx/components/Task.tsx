@@ -45,6 +45,9 @@ const taskSourceSpec: DragSourceSpec<P> = {
       poolIndex: props.poolIndex
     };
     return taskSpec;
+  },
+  canDrag(props: P) {
+    return props.id > -1;
   }
 };
 
@@ -86,6 +89,7 @@ const taskTargetSpec: DropTargetSpec<P> = {
 @DragSource("task", taskSourceSpec, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging(),
+  canDrag: monitor.canDrag()
 }))
 export default class Task extends React.Component<P, S> {
   static defaultProps?: Partial<P> = {
