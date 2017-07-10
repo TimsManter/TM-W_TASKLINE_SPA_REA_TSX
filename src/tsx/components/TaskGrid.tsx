@@ -180,10 +180,32 @@ const changeParentId = (
   return true;
 };
 
-const getIndex = (pool: TPool, spec: TaskSpec): number | undefined => {
-  const task: TTask = pool.tasks.filter(t => t.id === spec.id)[0];
+const getIndex = (pool: TPool, specId: TaskSpec | number): number | undefined => {
+  const id = typeof specId === "number" ? specId : specId.id;
+  const task: TTask = pool.tasks.filter(t => t.id === id)[0];
   if (task === undefined) { return undefined; }
   return pool.tasks.indexOf(task);
+};
+
+const moveUp = (
+  pools: TPool[],
+  tSpecFrom: TaskSpec,
+  tSpecTo: TaskSpec,
+  position: string | undefined) => {
+  const diff: number = tSpecFrom.poolIndex - tSpecTo.poolIndex;
+  for (let p = tSpecFrom.poolIndex; p < pools.length; p++) {
+    
+  }
+};
+
+const getChildrenIds = (pool: TPool, spec: TaskSpec): number[] => {
+  let ids: number[] = [];
+  for (let t in pool.tasks) {
+    if (pool.tasks[t].parentId === spec.id) {
+      ids.push(pool.tasks[t].id);
+    }
+  }
+  return ids;
 };
 
 const getMaxId = (pools: TPool[]): number => {
