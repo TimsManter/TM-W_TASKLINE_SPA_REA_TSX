@@ -186,6 +186,7 @@ export default class TaskGrid extends React.Component<P, S> {
     const pools = this.state.pools.slice();
     return (
       <div>
+        {renderNavbar()}
         {pools.map((pool, i) => (
           <Pool key={i}>
             {i === 0 ?
