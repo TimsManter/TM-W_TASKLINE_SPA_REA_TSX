@@ -45,6 +45,7 @@ const renderNavbar = (): JSX.Element => {
     <Navbar.Collapse>
       <Navbar.Form pullRight>
         <Button bsStyle="primary">New Task</Button>
+        <Task index={-1} poolIndex={-1} id={0}></Task>
       </Navbar.Form>
     </Navbar.Collapse>
   </Navbar>);
