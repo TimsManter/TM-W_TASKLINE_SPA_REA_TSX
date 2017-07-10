@@ -104,6 +104,22 @@ const swapTasks = (
   return true;
 };
 
+const changeParentId = (
+  pool: TPool,
+  tSpec: TaskSpec,
+  newId: number | TaskSpec): boolean => {
+  const tasks: TTask[] = pool.tasks;
+  const task: TTask = tasks.filter(t => t.id === tSpec.id)[0];
+  if (task === undefined) { return false; }
+  const tIndex: number = tasks.indexOf(task);
+  if (typeof newId === "number") {
+    tasks[tIndex].parentId = newId;
+  } else {
+    tasks[tIndex].parentId = newId.id;
+  }
+  return true;
+};
+
 /* CLASS */
 @DragDropContext(HTML5Backend)
 export default class TaskGrid extends React.Component<P, S> {
@@ -111,7 +127,7 @@ export default class TaskGrid extends React.Component<P, S> {
     super();
     this.moveTask = this.moveTask.bind(this);
     this.state = {
-      pools: [
+      pools: [ // sample data
         {
           id: 1,
           tasks: [
@@ -137,25 +153,23 @@ export default class TaskGrid extends React.Component<P, S> {
   moveTask?(dTaskSpec: TaskSpec, hTaskSpec: TaskSpec) {
     const newPools = this.state.pools.slice();
     const hPool: TPool = newPools[hTaskSpec.poolIndex];
-    const hTask: number = hPool.tasks.filter(t => t.id === hTaskSpec.id);
     const dPool: TPool = newPools[dTaskSpec.poolIndex];
-    const dTask: number
 
-    if (hTaskSpec.poolIndex === dTaskSpec.poolIndex) { // same pool
+    if (hPool === dPool) {
       if (hTaskSpec.id > -1) { // normal task
-        if (hTaskSpec.poolIndex === 0) { // master pool, swap tasks
-          [hPool.tasks.find, dPool.tasks[dTaskSpec.index]] =
-          [dPool.tasks[dTaskSpec.index], hPool.tasks[hTaskSpec.index]];
+        if (hTaskSpec.poolIndex === 0) {
+          swapTasks(dPool, dTaskSpec, hTaskSpec);
         }
-        else { // slave pool, swap parentIds
-          [hPool.tasks[hTaskSpec.index].parentId, dPool.tasks[dTaskSpec.index].parentId] =
-          [dPool.tasks[dTaskSpec.index].parentId, hPool.tasks[hTaskSpec.index].parentId];
+        else {
+          swapTasks(dPool, dTaskSpec, hTaskSpec, true);
         }
       } else { // dummy task
-        dPool.tasks[dTaskSpec.index].parentId = hTaskSpec.parentId;
+        changeParentId(dPool, dTaskSpec, hTaskSpec.parentId);
       }
-    } else if (hTaskSpec.poolIndex === dTaskSpec.poolIndex - 1) { // pool above
-      dPool.tasks[dTaskSpec.index].parentId = hPool.tasks[hTaskSpec.index].id;
+    } else if (hTaskSpec.poolIndex === dTaskSpec.poolIndex - 1) {
+      changeParentId(dPool, dTaskSpec, hTaskSpec);
+    } else {
+      // TODO: Add moving between many pools logic
     }
     this.setState({ pools: newPools });
   }
