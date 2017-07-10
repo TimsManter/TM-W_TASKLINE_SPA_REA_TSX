@@ -179,7 +179,7 @@ export default class TaskGrid extends React.Component<P, S> {
     const dPool: TPool = newPools[dTaskSpec.poolIndex];
 
     if (hPool === dPool) {
-      if (hTaskSpec.id > -1) { // normal task
+      if (hTaskSpec.id > 0) { // normal task
         swapTasks(dPool, dTaskSpec, hTaskSpec);
       } else { // dummy task
         changeParentId(dPool, dTaskSpec, hTaskSpec.parentId);

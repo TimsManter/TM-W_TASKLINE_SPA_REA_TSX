@@ -47,7 +47,7 @@ const taskSourceSpec: DragSourceSpec<P> = {
     return taskSpec;
   },
   canDrag(props: P) {
-    return props.id > -1;
+    return props.id !== -1;
   }
 };
 
