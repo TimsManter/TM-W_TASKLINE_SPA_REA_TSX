@@ -28,6 +28,7 @@ interface P {
   connectDragSource?: ConnectDragSource;
   connectDropTarget?: ConnectDropTarget;
   moveTask?: (dragTask: TaskSpec, hoverTask: TaskSpec) => void;
+  hover?: string;
 }
 interface S { }
 
@@ -75,13 +76,17 @@ const taskTargetSpec: DropTargetSpec<P> = {
     props.moveTask(dragTaskSpec, hoverTaskSpec);
   },
   hover(props, monitor, component) {
+    if (props.id === -1) { return; }
     const taskRect = ReactDOM.findDOMNode(component).getBoundingClientRect();
     const cursorOffset = monitor.getClientOffset();
-    if (cursorOffset.x > taskRect.left && cursorOffset.x < taskRect.left + 10) {
-      console.log("left");
-    } else if (cursorOffset.x < taskRect.right && cursorOffset.x > taskRect.right - 10) {
-      console.log("right");
-    }
+    const offset = 15;
+    if (cursorOffset.x > taskRect.left &&
+      cursorOffset.x < taskRect.left + offset) {
+      component.setState({ hover: "left" });
+    } else if (cursorOffset.x < taskRect.right &&
+      cursorOffset.x > taskRect.right - offset) {
+      component.setState({ hover: "right" });
+    } else { component.setState({ hover: undefined }); }
   }
 };
 
@@ -111,7 +116,8 @@ export default class Task extends React.Component<P, S> {
       isDragging,
       canDrop,
       isOver,
-      id
+      id,
+      hover
     } = this.props;
 
     let opacity: number = 1;
@@ -120,7 +126,11 @@ export default class Task extends React.Component<P, S> {
     else { opacity = 1; }
       
     return connectDragSource(connectDropTarget(
-      <div style={{ opacity }}>
+      <div className="task-container" style={{
+        opacity,
+        borderRightColor: hover === "right" && isOver ? "red" : "transparent",
+        borderLeftColor: hover === "left" && isOver ? "red" : "transparent"
+      }}>
         {id === 0 && !isDragging ? <Button bsStyle="primary">New Task</Button> :
         (<Panel header={this.props.children}
           className={"task-wrapper task-width-" + this.props.size}>
