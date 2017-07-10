@@ -7,7 +7,7 @@ import HTML5Backend from "react-dnd-html5-backend";
 import Pool from "./Pool";
 import Task, { TaskSpec } from "./Task";
 
-/* INTERFSCES */
+/* INTERFACES */
 interface TTask {
   id: number;
   parentId?: number;
