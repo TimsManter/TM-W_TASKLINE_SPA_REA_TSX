@@ -79,13 +79,13 @@ const taskTargetSpec: DropTargetSpec<P> = {
     props.moveTask(dragTaskSpec, hoverTaskSpec, checkTaskPosition(monitor, component));
   },
   hover(props, monitor, component) {
-    if (props.id === -1) { return; }
-    if (props.id === (monitor.getItem() as TaskSpec).id) { return; }
     component.setState({ hover: checkTaskPosition(monitor, component) });
   }
 };
 
 const checkTaskPosition = (monitor: DropTargetMonitor, component: Task): string | undefined => {
+  if (component.props.id === -1) { return undefined; }
+  if (component.props.id === (monitor.getItem() as TaskSpec).id) { return undefined; }
   const taskRect = ReactDOM.findDOMNode(component).getBoundingClientRect();
   const cursorOffset = monitor.getClientOffset();
   const offset = 30;
