@@ -163,6 +163,12 @@ const changeParentId = (
   return true;
 };
 
+const getIndex = (pool: TPool, spec: TaskSpec): number | undefined => {
+  const task: TTask = pool.tasks.filter(t => t.id === spec.id)[0];
+  if (task === undefined) { return undefined; }
+  return pool.tasks.indexOf(task);
+};
+
 /* CLASS */
 @DragDropContext(HTML5Backend)
 export default class TaskGrid extends React.Component<P, S> {
