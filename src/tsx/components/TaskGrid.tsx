@@ -87,19 +87,18 @@ const renderChildTasks = (
 const swapTasks = (
   pool: TPool,
   tSpec1: TaskSpec,
-  tSpec2: TaskSpec,
-  parentIdOnly: boolean = false): boolean => {
+  tSpec2: TaskSpec): boolean => {
   const tasks: TTask[] = pool.tasks;
   const task1: TTask = tasks.filter(t => t.id === tSpec1.id)[0];
   const task2: TTask = tasks.filter(t => t.id === tSpec2.id)[0];
   if (task1 === undefined || task2 === undefined) { return false; }
   const tIndex1: number = tasks.indexOf(task1);
   const tIndex2: number = tasks.indexOf(task2);
-  if (parentIdOnly) {
+  if (tSpec1.poolIndex === 0 || tSpec1.parentId === tSpec2.parentId) {
+    [tasks[tIndex1], tasks[tIndex2]] = [tasks[tIndex2], tasks[tIndex1]];
+  } else {
     [tasks[tIndex1].parentId, tasks[tIndex2].parentId] =
     [tasks[tIndex2].parentId, tasks[tIndex1].parentId];
-  } else {
-    [tasks[tIndex1], tasks[tIndex2]] = [tasks[tIndex2], tasks[tIndex1]];
   }
   return true;
 };
@@ -157,12 +156,7 @@ export default class TaskGrid extends React.Component<P, S> {
 
     if (hPool === dPool) {
       if (hTaskSpec.id > -1) { // normal task
-        if (hTaskSpec.poolIndex === 0) {
-          swapTasks(dPool, dTaskSpec, hTaskSpec);
-        }
-        else {
-          swapTasks(dPool, dTaskSpec, hTaskSpec, true);
-        }
+        swapTasks(dPool, dTaskSpec, hTaskSpec);
       } else { // dummy task
         changeParentId(dPool, dTaskSpec, hTaskSpec.parentId);
       }
