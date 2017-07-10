@@ -187,7 +187,7 @@ export default class TaskGrid extends React.Component<P, S> {
     } else if (hTaskSpec.poolIndex === dTaskSpec.poolIndex - 1) {
       changeParentId(dPool, dTaskSpec, hTaskSpec);
     } else {
-      // TODO: Add moving between many pools logic
+      // TODO: Add logic to move tasks between many pools
     }
     this.setState({ pools: newPools });
   }
