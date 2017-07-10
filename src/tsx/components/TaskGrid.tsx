@@ -85,7 +85,7 @@ const swapTasks = (pool: TPool, tSpec1: TaskSpec, tSpec2: TaskSpec) => {
   if (task1 === undefined || task2 === undefined) { return false; }
   const tIndex1: number = tasks.indexOf(task1);
   const tIndex2: number = tasks.indexOf(task2);
-  [tasks[tIndex1], tasks[tIndex2]] = [[tasks[tIndex2], tasks[tIndex1]];
+  [tasks[tIndex1], tasks[tIndex2]] = [tasks[tIndex2], tasks[tIndex1]];
 };
 
 @DragDropContext(HTML5Backend)
