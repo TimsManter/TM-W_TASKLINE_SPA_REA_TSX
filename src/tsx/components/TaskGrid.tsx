@@ -179,16 +179,21 @@ const insertNewTask = (
     content: "New Task"
   };
   if (position === undefined) {
-    newTask.parentId = tSpec.id;
-    if (pools[tSpec.poolIndex + 1] === undefined) {
-      let maxId = tSpec.poolIndex;
-      for (let p in pools) {
-        if (pools[p].id > maxId) { maxId = pools[p].id; }
+    if (tSpec.id < 0) {
+      newTask.parentId = tSpec.parentId;
+      pools[tSpec.poolIndex].tasks.push(newTask);
+    } else {
+      newTask.parentId = tSpec.id;
+      if (pools[tSpec.poolIndex + 1] === undefined) {
+        let maxId = tSpec.poolIndex;
+        for (let p in pools) {
+          if (pools[p].id > maxId) { maxId = pools[p].id; }
+        }
+        const newPool: TPool = { id: maxId + 1, tasks: [] };
+        pools.push(newPool);
       }
-      const newPool: TPool = { id: maxId + 1, tasks: [] };
-      pools.push(newPool);
+      pools[tSpec.poolIndex+1].tasks.push(newTask);
     }
-    pools[tSpec.poolIndex+1].tasks.push(newTask);
   }
   else {
     if (tSpec.parentId) { newTask.parentId = tSpec.parentId; }
