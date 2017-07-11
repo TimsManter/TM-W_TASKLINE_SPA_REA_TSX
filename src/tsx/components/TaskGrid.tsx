@@ -194,7 +194,12 @@ const moveUp = (
   position: string | undefined) => {
   const diff: number = tSpecFrom.poolIndex - tSpecTo.poolIndex;
   for (let p = tSpecFrom.poolIndex; p < pools.length; p++) {
-    
+    let childIds = getChildIds(pools[p], tSpecFrom);
+    for (let i in childIds) {
+      let tIndex = getIndex(pools[p], childIds[i]);
+      let childTask = pools[p].tasks.splice(tIndex, 1)[0];
+      pools[p-diff].tasks.push(childTask);
+    }
   }
 };
 
