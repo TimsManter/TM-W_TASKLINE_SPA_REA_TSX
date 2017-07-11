@@ -127,7 +127,7 @@ export default class Task extends React.Component<P, S> {
       hover,
       size
     } = this.props;
-    const width: number = size === 1 ? 150 : 154 * size;
+    const width: number = 150 * size;
     
     let opacity: number = 1;
     if (isOver) { opacity = 0.5; }
@@ -136,15 +136,14 @@ export default class Task extends React.Component<P, S> {
       
     return connectDragSource(connectDropTarget(
       <div className="task-container" style={{
-        width,
         opacity,
         borderRightColor: hover === "right" && isOver ? "red" : "transparent",
         borderLeftColor: hover === "left" && isOver ? "red" : "transparent"
       }}>
         {id === 0 && !isDragging ?
           (<Button bsStyle="primary">New Task (drag me)</Button>) :
-        (<Panel header={this.props.children}
-          className={"task-wrapper"}>
+          (<Panel header={this.props.children}
+            className={"task-wrapper"} style={{width}}>
           {this.props.children}
         </Panel>)}
       </div>

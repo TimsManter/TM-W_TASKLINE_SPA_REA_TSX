@@ -20,6 +20,7 @@ $task-border-width: 2px;
   .task-wrapper {
     height: 100%;
 
+    /* not used, in code now */
     &.task-width-1 {
       width: $task-width-base;
     }
