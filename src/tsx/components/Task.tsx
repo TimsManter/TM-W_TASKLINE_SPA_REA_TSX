@@ -130,7 +130,7 @@ export default class Task extends React.Component<P, S> {
     const width: number = 150 * size;
     
     let opacity: number = 1;
-    if (isOver) { opacity = 0.5; }
+    if (isOver && canDrop) { opacity = 0.5; }
     else if (isDragging || id === -1) { opacity = 0; }
     else { opacity = 1; }
       
