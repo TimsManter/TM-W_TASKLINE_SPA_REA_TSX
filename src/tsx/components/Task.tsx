@@ -49,9 +49,7 @@ const taskSourceSpec: DragSourceSpec<P> = {
     };
     return taskSpec;
   },
-  canDrag(props: P) {
-    return props.id !== -1;
-  }
+  canDrag(props: P) { return props.id >= 0; }
 };
 
 const taskCollector = (
@@ -79,6 +77,12 @@ const taskTargetSpec: DropTargetSpec<P> = {
   },
   hover(props, monitor, component) {
     component.setState({ hover: checkTaskPosition(monitor, component) });
+  },
+  canDrop(props: P, monitor) {
+    if (props.id === -2) { return false; }
+    const dTask = monitor.getItem() as TaskSpec;
+    if (props.parentId === dTask.id) { return false; }
+    return true;
   }
 };
 
@@ -130,7 +134,7 @@ export default class Task extends React.Component<P, S> {
     
     let opacity: number = 1;
     if (isOver && canDrop) { opacity = 0.5; }
-    else if (isDragging || id === -1) { opacity = 0; }
+    else if (isDragging || id < 0) { opacity = 0; }
     else { opacity = 1; }
       
     return connectDragSource(connectDropTarget(
