@@ -226,7 +226,10 @@ const moveUpTask = (
     diff--;
     pIndexTo++;
   }
-  else if (position === "right") { tIndexTo++; }
+  else {
+    parentTask.parentId = tSpecTo.parentId;
+    if (position === "right") { tIndexTo++; }
+  }
   pools[pIndexTo].tasks.splice(tIndexTo, 0, parentTask);
   moveUpChildTasks(pools, tSpecFrom.poolIndex, tSpecFrom.id, diff);
 };
