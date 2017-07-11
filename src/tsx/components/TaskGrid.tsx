@@ -286,7 +286,7 @@ export default class TaskGrid extends React.Component<P, S> {
       }
       else if (hPool === dPool) {
         insertTask(hPool, dTaskSpec, hTaskSpec, position);
-      } else if (hTaskSpec.poolIndex > dTaskSpec.poolIndex) { // up
+      } else if (hTaskSpec.poolIndex < dTaskSpec.poolIndex) { // up
         moveUpTask(newPools, dTaskSpec, hTaskSpec, position);
       } else {
         // TODO: Add logic to move tasks between many pools
@@ -303,7 +303,7 @@ export default class TaskGrid extends React.Component<P, S> {
         }
       } else if (hTaskSpec.poolIndex === dTaskSpec.poolIndex - 1) {
         changeParentId(dPool, dTaskSpec, hTaskSpec);
-      } else if (hTaskSpec.poolIndex > dTaskSpec.poolIndex) { // up
+      } else if (hTaskSpec.poolIndex < dTaskSpec.poolIndex) { // up
         moveUpTask(newPools, dTaskSpec, hTaskSpec, position);
       } else {
         // TODO: Add logic to move tasks between many pools
