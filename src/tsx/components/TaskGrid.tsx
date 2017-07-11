@@ -279,15 +279,15 @@ export default class TaskGrid extends React.Component<P, S> {
     const newPools = this.state.pools.slice();
     const hPool: TPool = newPools[hTaskSpec.poolIndex];
     const dPool: TPool = newPools[dTaskSpec.poolIndex];
-
+    // TODO: This section require more unify and removing `position` condition
     if (position) {
       if (dTaskSpec.id === 0) {
         insertNewTask(hPool, hTaskSpec, getMaxId(newPools) + 1, position);
       }
       else if (hPool === dPool) {
         insertTask(hPool, dTaskSpec, hTaskSpec, position);
-      } else if (dTaskSpec.id === 0) {
-        
+      } else if (hTaskSpec.poolIndex > dTaskSpec.poolIndex) { // up
+        moveUpTask(newPools, dTaskSpec, hTaskSpec, position);
       } else {
         // TODO: Add logic to move tasks between many pools
       }
@@ -303,6 +303,8 @@ export default class TaskGrid extends React.Component<P, S> {
         }
       } else if (hTaskSpec.poolIndex === dTaskSpec.poolIndex - 1) {
         changeParentId(dPool, dTaskSpec, hTaskSpec);
+      } else if (hTaskSpec.poolIndex > dTaskSpec.poolIndex) { // up
+        moveUpTask(newPools, dTaskSpec, hTaskSpec, position);
       } else {
         // TODO: Add logic to move tasks between many pools
       }
