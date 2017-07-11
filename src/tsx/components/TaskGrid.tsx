@@ -147,22 +147,32 @@ const insertTask = (
 };
 
 const insertNewTask = (
-  pool: TPool,
+  pools: TPool[],
   tSpec: TaskSpec,
   id: number,
   position?: string | undefined): boolean => {
-  const tasks: TTask[] = pool.tasks;
   const newTask: TTask = {
     id: id,
     content: "New Task"
   };
-  if (tSpec.parentId) { newTask.parentId = tSpec.parentId; }
-  if (position === undefined) { tasks.push(newTask); }
+  if (position === undefined) {
+    newTask.parentId = tSpec.id;
+    if (pools[tSpec.poolIndex + 1] === undefined) {
+      let maxId = tSpec.poolIndex;
+      for (let p in pools) {
+        if (pools[p].id > maxId) { maxId = pools[p].id; }
+      }
+      const newPool: TPool = { id: maxId + 1, tasks: [] };
+      pools.push(newPool);
+    }
+    pools[tSpec.poolIndex+1].tasks.push(newTask);
+  }
   else {
-    let tIndexTo: number = getIndex(pool, tSpec);
+    if (tSpec.parentId) { newTask.parentId = tSpec.parentId; }
+    let tIndexTo: number = getIndex(pools[tSpec.poolIndex], tSpec);
     if (tIndexTo === undefined) { return false; }
     if (position === "right") { tIndexTo++; }
-    tasks.splice(tIndexTo, 0, newTask);
+    pools[tSpec.poolIndex].tasks.splice(tIndexTo, 0, newTask);
   }
   return true;
 };
@@ -292,7 +302,7 @@ export default class TaskGrid extends React.Component<P, S> {
     // TODO: This section require more unify and removing `position` condition
     if (position) {
       if (dTaskSpec.id === 0) {
-        insertNewTask(hPool, hTaskSpec, getMaxId(newPools) + 1, position);
+        insertNewTask(newPools, hTaskSpec, getMaxId(newPools) + 1, position);
       }
       else if (hPool === dPool) {
         insertTask(hPool, dTaskSpec, hTaskSpec, position);
@@ -303,7 +313,7 @@ export default class TaskGrid extends React.Component<P, S> {
       }
     } else {
       if (dTaskSpec.id === 0) {
-        insertNewTask(hPool, hTaskSpec, getMaxId(newPools) + 1);
+        insertNewTask(newPools, hTaskSpec, getMaxId(newPools) + 1);
       }
       else if (hPool === dPool) {
         if (hTaskSpec.id > 0) { // normal task
