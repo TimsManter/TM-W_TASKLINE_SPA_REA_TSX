@@ -1,5 +1,6 @@
 $task-height: 200px;
 $task-width-base: 150px;
+$task-border-width: 2px;
 
 #app {
   padding: 20px;
@@ -13,26 +14,26 @@ $task-width-base: 150px;
 }
 
 .task-container {
-  border-left: 2px solid transparent;
-  border-right: 2px solid transparent;
+  border-left: $task-border-width solid transparent;
+  border-right: $task-border-width solid transparent;
 
   .task-wrapper {
     height: 100%;
 
     &.task-width-1 {
-      width: $task-width-base * 1;
+      width: $task-width-base;
     }
     &.task-width-2 {
-      width: $task-width-base * 2;
+      width: ($task-width-base + $task-border-width * 2) * 2;
     }
     &.task-width-3 {
-      width: $task-width-base * 3;
+      width: ($task-width-base + $task-border-width * 2) * 3;
     }
     &.task-width-4 {
-      width: $task-width-base * 4;
+      width: ($task-width-base + $task-border-width * 2) * 4;
     }
     &.task-width-5 {
-      width: $task-width-base * 5;
+      width: ($task-width-base + $task-border-width * 2) * 5;
     }
   }
 }
