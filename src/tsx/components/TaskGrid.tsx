@@ -112,18 +112,23 @@ const renderChildTasks = (
 };
 
 const swapTasks = (
-  pool: TPool,
+  pools: TPool[],
   tSpec1: TaskSpec,
   tSpec2: TaskSpec): boolean => {
-  const tasks: TTask[] = pool.tasks;
-  const tIndex1: number = getIndex(pool, tSpec1);
-  const tIndex2: number = getIndex(pool, tSpec2);
+  const tasks1: TTask[] = pools[tSpec1.poolIndex].tasks;
+  const tasks2: TTask[] = pools[tSpec2.poolIndex].tasks;
+  const tIndex1: number = getIndex(pools[tSpec1.poolIndex], tSpec1);
+  const tIndex2: number = getIndex(pools[tSpec2.poolIndex], tSpec2);
   if (tIndex1 === undefined || tIndex2 === undefined) { return false; }
-  if (tSpec1.poolIndex === 0 || tSpec1.parentId === tSpec2.parentId) {
-    [tasks[tIndex1], tasks[tIndex2]] = [tasks[tIndex2], tasks[tIndex1]];
+  if (tSpec1.poolIndex === tSpec2.poolIndex) {
+    if (tSpec1.poolIndex === 0 || tSpec1.parentId === tSpec2.parentId) {
+      [tasks1[tIndex1], tasks2[tIndex2]] = [tasks2[tIndex2], tasks1[tIndex1]];
+    } else {
+      [tasks1[tIndex1].parentId, tasks2[tIndex2].parentId] =
+      [tasks2[tIndex2].parentId, tasks1[tIndex1].parentId];
+    }
   } else {
-    [tasks[tIndex1].parentId, tasks[tIndex2].parentId] =
-    [tasks[tIndex2].parentId, tasks[tIndex1].parentId];
+    return false; // TODO: Maybe move implementation here
   }
   return true;
 };
@@ -205,15 +210,21 @@ const moveUpTask = (
   tSpecFrom: TaskSpec,
   tSpecTo: TaskSpec,
   position: string | undefined) => {
-  let diff: number = tSpecFrom.poolIndex - tSpecTo.poolIndex;
   const parentIndex = getIndex(pools[tSpecFrom.poolIndex], tSpecFrom.id);
+  const parentTask = pools[tSpecFrom.poolIndex].tasks.splice(parentIndex, 1)[0];
+  let diff: number = tSpecFrom.poolIndex - tSpecTo.poolIndex;
+  if (tSpecTo.id === -1) {
+    parentTask.parentId = tSpecTo.parentId;
+    pools[tSpecTo.poolIndex].tasks.push(parentTask);
+    moveUpChildTasks(pools, tSpecFrom.poolIndex, tSpecFrom.id, diff);
+    return;
+  }
   let tIndexTo = getIndex(pools[tSpecTo.poolIndex], tSpecTo.id);
   let pIndexTo = tSpecTo.poolIndex;
-  const parentTask = pools[tSpecFrom.poolIndex].tasks.splice(parentIndex, 1)[0];
   if (position === undefined) {
+    parentTask.parentId = tSpecTo.id;
     diff--;
     pIndexTo++;
-    parentTask.parentId = tSpecTo.id;
   }
   else if (position === "right") { tIndexTo++; }
   pools[pIndexTo].tasks.splice(tIndexTo, 0, parentTask);
@@ -309,7 +320,7 @@ export default class TaskGrid extends React.Component<P, S> {
       } else if (hTaskSpec.poolIndex < dTaskSpec.poolIndex) { // up
         moveUpTask(newPools, dTaskSpec, hTaskSpec, position);
       } else {
-        // TODO: Add logic to move tasks between many pools
+        // TODO: Add logic to move tasks down
       }
     } else {
       if (dTaskSpec.id === 0) {
@@ -317,16 +328,14 @@ export default class TaskGrid extends React.Component<P, S> {
       }
       else if (hPool === dPool) {
         if (hTaskSpec.id > 0) { // normal task
-          swapTasks(dPool, dTaskSpec, hTaskSpec);
+          swapTasks(newPools, dTaskSpec, hTaskSpec);
         } else { // dummy task
           changeParentId(dPool, dTaskSpec, hTaskSpec.parentId);
         }
-      } else if (hTaskSpec.poolIndex === dTaskSpec.poolIndex - 1) {
-        changeParentId(dPool, dTaskSpec, hTaskSpec);
       } else if (hTaskSpec.poolIndex < dTaskSpec.poolIndex) { // up
         moveUpTask(newPools, dTaskSpec, hTaskSpec, position);
       } else {
-        // TODO: Add logic to move tasks between many pools
+        // TODO: Add logic to move tasks down
       }
     }
     this.setState({ pools: newPools });
