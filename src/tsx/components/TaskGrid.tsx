@@ -187,19 +187,30 @@ const getIndex = (pool: TPool, specId: TaskSpec | number): number | undefined =>
   return pool.tasks.indexOf(task);
 };
 
-const moveUp = (
+const moveUpEvent = (
   pools: TPool[],
   tSpecFrom: TaskSpec,
   tSpecTo: TaskSpec,
   position: string | undefined) => {
   const diff: number = tSpecFrom.poolIndex - tSpecTo.poolIndex;
-  for (let p = tSpecFrom.poolIndex; p < pools.length; p++) {
-    let childIds = getChildIds(pools[p], tSpecFrom);
-    for (let i in childIds) {
-      let tIndex = getIndex(pools[p], childIds[i]);
-      let childTask = pools[p].tasks.splice(tIndex, 1)[0];
-      pools[p-diff].tasks.push(childTask);
-    }
+  moveTaskUp(pools, tSpecFrom.poolIndex, tSpecFrom.id, diff);
+};
+
+const moveTaskUp = (
+  pools: TPool[],
+  poolIndex: number,
+  taskId: number,
+  diff: number) => {
+  let parentIndex = getIndex(pools[poolIndex], taskId);
+  let parentTask = pools[poolIndex].tasks.splice(parentIndex, 1)[0];
+  pools[poolIndex - diff].tasks.push(parentTask);
+  if (pools[poolIndex + 1] === undefined) { return; }
+  let childIds = getChildIds(pools[poolIndex+1], taskId);
+  for (let c in childIds) {
+    moveTaskUp(pools, poolIndex + 1, childIds[c], diff);
+    let childIndex = getIndex(pools[poolIndex + 1], childIds[c]);
+    let childTask = pools[poolIndex + 1].tasks.splice(childIndex, 1)[0];
+    pools[poolIndex + 1 - diff].tasks.push(childTask);
   }
 };
 
