@@ -198,7 +198,7 @@ const moveUp = (
   }
 };
 
-const getChildrenIds = (pool: TPool, specId: TaskSpec | number): number[] => {
+const getChildIds = (pool: TPool, specId: TaskSpec | number): number[] => {
   const id = typeof specId === "number" ? specId : specId.id;
   let ids: number[] = [];
   for (let t in pool.tasks) {
