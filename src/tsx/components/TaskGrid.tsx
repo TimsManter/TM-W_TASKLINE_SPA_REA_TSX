@@ -44,7 +44,7 @@ const renderNavbar = (): JSX.Element => {
     </Navbar.Header>
     <Navbar.Collapse>
       <Navbar.Form pullRight>
-        <Task index={-1} poolIndex={-1} id={0}></Task>
+        <Task poolIndex={-1} id={0}></Task>
       </Navbar.Form>
     </Navbar.Collapse>
   </Navbar>);
@@ -69,45 +69,63 @@ const calcSize = (
 
 const renderChildTasks = (
   grid: TaskGrid,
-  pool: TPool,
-  poolIndex: number,
-  parentPool: TPool): JSX.Element[] => {
-  
+  pools: TPool[],
+  poolIndex: number): JSX.Element[] => {
+  const currentTasks = pools[poolIndex].tasks;
+  const parentTasks = pools[poolIndex - 1].tasks;
   const tasks: JSX.Element[] = [];
-  let i = 0;
   let k = 0;
-  parentPool.tasks.forEach(parentTask => {
-    const filteredTasks = pool.tasks.filter(task => task.parentId === parentTask.id);
-    if (filteredTasks.length > 0) {
-      filteredTasks.forEach((task) => {
-        tasks.push(
-          <Task key={k}
-            index={i}
-            poolIndex={poolIndex}
-            id={task.id}
-            parentId={task.parentId}
-            moveTask={grid.moveTask}
-            size={calcSize(grid.state.pools, task.id, poolIndex)}>
-            {task.content}
-          </Task>
-        );
-        i++;
-        k++;
-      });
-    }
-    else { // dummy task (placeholder)
+  let pk = 0;
+  for (let p in parentTasks) {
+    let childTasks = currentTasks.filter(task =>
+      task.parentId === parentTasks[p].id);
+    if (grid.placeholders.filter(t => t.poolIndex === poolIndex - 1 &&
+      t.id === pk).length > 0) {
       tasks.push(
-      <Task key={k}
-        index={-1}
-        poolIndex={poolIndex}
-        id={-1}
-        parentId={parentTask.id}
-        moveTask={grid.moveTask}>
-      </Task>
-      );
+        <Task key={k}
+          poolIndex={poolIndex}
+          id={-2}
+          parentId={null}
+          moveTask={grid.moveTask}>
+        </Task>);
+      grid.placeholders.push({
+        id: k,
+        parentId: parentTasks[p].id,
+        poolIndex: poolIndex
+      });
       k++;
     }
-  });
+    if (childTasks.length === 0) {
+      tasks.push(
+        <Task key={k}
+          poolIndex={poolIndex}
+          id={-1}
+          parentId={parentTasks[p].id}
+          moveTask={grid.moveTask}>
+        </Task>);
+      grid.placeholders.push({
+        id: k,
+        parentId: parentTasks[p].id,
+        poolIndex: poolIndex
+      });
+      k++;
+    }
+    else {
+      for (let c in childTasks) {
+        tasks.push(
+          <Task key={k}
+            poolIndex={poolIndex}
+            id={childTasks[c].id}
+            parentId={parentTasks[p].id}
+            moveTask={grid.moveTask}
+            size={calcSize(grid.state.pools, childTasks[c].id, poolIndex)}>
+            {childTasks[c].content}
+          </Task>);
+        k++;
+      }
+    }
+    pk++;
+  }
   return tasks;
 };
 
@@ -275,8 +293,10 @@ const getMaxId = (pools: TPool[]): number => {
 /* CLASS */
 @DragDropContext(HTML5Backend)
 export default class TaskGrid extends React.Component<P, S> {
+  placeholders?: TaskSpec[];
   constructor() {
     super();
+    this.placeholders = [];
     this.moveTask = this.moveTask.bind(this);
     this.state = {
       pools: [ // sample data
@@ -354,14 +374,12 @@ export default class TaskGrid extends React.Component<P, S> {
             {i === 0 ?
               (pool.tasks.map((task, j) => (
                 <Task key={j}
-                  index={j}
                   poolIndex={i}
                   id={task.id}
                   moveTask={this.moveTask}
                   size={calcSize(pools, task.id, i)}>
                   {task.content}
-                </Task>))) :
-              renderChildTasks(this, pool, i, this.state.pools[i - 1])}
+                </Task>))) : renderChildTasks(this, pools, i)}
           </Pool>
         ))}
         <Pool>{JSON.stringify(this.state, null, 4)}</Pool>

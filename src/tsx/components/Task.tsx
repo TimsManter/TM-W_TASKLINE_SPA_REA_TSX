@@ -19,7 +19,6 @@ import {
 
 /* INTERFACES */
 interface P {
-  index: number;
   poolIndex: number;
   parentId?: number;
   id: number;
