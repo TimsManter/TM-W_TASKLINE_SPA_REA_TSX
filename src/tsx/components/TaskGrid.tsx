@@ -90,7 +90,7 @@ const renderChildTasks = (
         </Task>);
       grid.placeholders.push({
         id: k,
-        parentId: parentTasks[p].id,
+        parentId: null,
         poolIndex: poolIndex
       });
       k++;
@@ -381,7 +381,7 @@ export default class TaskGrid extends React.Component<P, S> {
                   {task.content}
                 </Task>))) : renderChildTasks(this, pools, i)}
           </Pool>
-        ))}
+        ))}{this.placeholders=[]}
         <Pool>{JSON.stringify(this.state, null, 4)}</Pool>
       </div>
     );
