@@ -51,17 +51,20 @@ const renderNavbar = (): JSX.Element => {
 };
 
 const calcSize = (
-  grid: TaskGrid,
+  pools: TPool[],
   taskId: number,
   poolIndex: number): number => {
-  if (taskId === -1 || poolIndex === undefined) { return 1; }
   let count = 1;
-  if (grid.state.pools.length > poolIndex + 1) {
-    count = grid.state.pools[poolIndex + 1].tasks.filter(task => {
-      return task.parentId === taskId;
-    }).length;
+  if (taskId === -1 || pools[poolIndex+1] === undefined) { return count; }
+  for (let p = poolIndex+1; p < pools.length; p++) {
+    let childIds = getChildIds(pools[p], taskId);
+    if (childIds.length > 1) { count += childIds.length - 1; }
+    for (let i in childIds) {
+      let childsCount = calcSize(pools, childIds[i], poolIndex + 1);
+      if (childsCount > 1) { count += childsCount - 1; }
+    }
   }
-  return count === 0 ? 1 : count;
+  return count;
 };
 
 const renderChildTasks = (
@@ -84,7 +87,7 @@ const renderChildTasks = (
             id={task.id}
             parentId={task.parentId}
             moveTask={grid.moveTask}
-            size={calcSize(grid, task.id, poolIndex)}>
+            size={calcSize(grid.state.pools, task.id, poolIndex)}>
             {task.content}
           </Task>
         );
@@ -326,7 +329,7 @@ export default class TaskGrid extends React.Component<P, S> {
                   poolIndex={i}
                   id={task.id}
                   moveTask={this.moveTask}
-                  size={calcSize(this, task.id, i)}>
+                  size={calcSize(pools, task.id, i)}>
                   {task.content}
                 </Task>))) :
               renderChildTasks(this, pool, i, this.state.pools[i - 1])}
