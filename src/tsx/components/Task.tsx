@@ -160,7 +160,9 @@ export default class Task extends React.Component<P, S> {
         borderLeftColor: hover === "left" && isOver ? "red" : "transparent"
       }}>
         {id === 0 && !isDragging ?
-          (<Button bsStyle="primary">New Task (drag me)</Button>) :
+          (<Button bsStyle="primary">
+            Drag me to create or drop here to remove
+          </Button>) :
           (<Panel header={this.props.children}
             className={"task-wrapper"} style={{width}}>
           {this.props.children}
