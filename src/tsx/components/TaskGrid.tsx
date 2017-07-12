@@ -228,7 +228,7 @@ const getIndex = (pool: TPool, specId: TaskSpec | number): number | undefined =>
   return pool.tasks.indexOf(task);
 };
 
-const moveUpTask = (
+const moveVertTask = (
   pools: TPool[],
   tSpecFrom: TaskSpec,
   tSpecTo: TaskSpec,
@@ -239,7 +239,7 @@ const moveUpTask = (
   if (tSpecTo.id === -1) {
     parentTask.parentId = tSpecTo.parentId;
     pools[tSpecTo.poolIndex].tasks.push(parentTask);
-    moveUpChildTasks(pools, tSpecFrom.poolIndex, tSpecFrom.id, diff);
+    moveVertChildTasks(pools, tSpecFrom.poolIndex, tSpecFrom.id, diff);
     return;
   }
   let tIndexTo = getIndex(pools[tSpecTo.poolIndex], tSpecTo.id);
@@ -254,10 +254,10 @@ const moveUpTask = (
     if (position === "right") { tIndexTo++; }
   }
   pools[pIndexTo].tasks.splice(tIndexTo, 0, parentTask);
-  moveUpChildTasks(pools, tSpecFrom.poolIndex, tSpecFrom.id, diff);
+  moveVertChildTasks(pools, tSpecFrom.poolIndex, tSpecFrom.id, diff);
 };
 
-const moveUpChildTasks = (
+const moveVertChildTasks = (
   pools: TPool[],
   poolIndex: number,
   taskId: number,
@@ -265,7 +265,7 @@ const moveUpChildTasks = (
   if (pools[poolIndex + 1] === undefined) { return; }
   const childIds = getChildIds(pools[poolIndex+1], taskId);
   for (let c in childIds) {
-    moveUpChildTasks(pools, poolIndex + 1, childIds[c], diff);
+    moveVertChildTasks(pools, poolIndex + 1, childIds[c], diff);
     let childIndex = getIndex(pools[poolIndex + 1], childIds[c]);
     let childTask = pools[poolIndex + 1].tasks.splice(childIndex, 1)[0];
     pools[poolIndex + 1 - diff].tasks.push(childTask);
@@ -345,10 +345,8 @@ export default class TaskGrid extends React.Component<P, S> {
       }
       else if (hPool === dPool) {
         insertTask(hPool, dTaskSpec, hTaskSpec, position);
-      } else if (hTaskSpec.poolIndex < dTaskSpec.poolIndex) { // up
-        moveUpTask(newPools, dTaskSpec, hTaskSpec, position);
       } else {
-        // TODO: Add logic to move tasks down
+        moveVertTask(newPools, dTaskSpec, hTaskSpec, position);
       }
     } else {
       if (dTaskSpec.id === 0) {
@@ -360,10 +358,8 @@ export default class TaskGrid extends React.Component<P, S> {
         } else { // dummy task
           changeParentId(dPool, dTaskSpec, hTaskSpec.parentId);
         }
-      } else if (hTaskSpec.poolIndex < dTaskSpec.poolIndex) { // up
-        moveUpTask(newPools, dTaskSpec, hTaskSpec, position);
       } else {
-        // TODO: Add logic to move tasks down
+        moveVertTask(newPools, dTaskSpec, hTaskSpec, position);
       }
     }
     this.setState({ pools: newPools });
