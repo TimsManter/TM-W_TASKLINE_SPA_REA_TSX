@@ -431,8 +431,8 @@ export default class TaskGrid extends React.Component<P, S> {
   render(): JSX.Element | null | false {
     const pools = this.state.pools.slice();
     return (
-      <Grid fluid><Row>
-        <Col>
+      <Grid fluid><Row style={{display: "flex"}}>
+        <Col style={{flexGrow: 1}}>
           {renderNavbar()}
           {poolViews(pools).map(p => (
             <Pool key={p.key} id={p.id}>

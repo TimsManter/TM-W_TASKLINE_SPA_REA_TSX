@@ -93,7 +93,7 @@ const taskTargetSpec: DropTargetSpec<P> = {
   hover(props, monitor, component) {
     component.setState({ hover: checkTaskPosition(monitor, component) });
   },
-  canDrop(props: P, monitor) {
+  canDrop(props: P, monitor: DropTargetMonitor) {
     if (props.id === -2) { return false; }
     const dTask = monitor.getItem() as TaskSpec;
     if (props.id === dTask.id) { return false; }
