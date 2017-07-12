@@ -416,9 +416,9 @@ export default class TaskGrid extends React.Component<P, S> {
     else if (hPool === dPool) {
       if (position) { insertTask(hPool, dTaskSpec, hTaskSpec, position); }
       else {
-        if (hTaskSpec.id > 0) { // normal task
+        if (hTaskSpec.id > 0) {
           swapTasks(newPools, dTaskSpec, hTaskSpec);
-        } else { // dummy task
+        } else {
           changeParentId(dPool, dTaskSpec, hTaskSpec.parentId);
         }
       }

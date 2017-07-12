@@ -84,7 +84,6 @@ const taskTargetSpec: DropTargetSpec<P> = {
       parentId: props.parentId,
       poolIndex: props.poolIndex
     };
-
     if (dragTaskSpec.id === hoverTaskSpec.id &&
       dragTaskSpec.poolIndex === hoverTaskSpec.poolIndex) { return; }
     
@@ -102,7 +101,9 @@ const taskTargetSpec: DropTargetSpec<P> = {
   }
 };
 
-const checkTaskPosition = (monitor: DropTargetMonitor, component: Task): string | undefined => {
+const checkTaskPosition = (
+  monitor: DropTargetMonitor,
+  component: Task): string | undefined => {
   if (component.props.id === -1) { return undefined; }
   if (component.props.id === (monitor.getItem() as TaskSpec).id) { return undefined; }
   const taskRect = ReactDOM.findDOMNode(component).getBoundingClientRect();
@@ -130,7 +131,6 @@ export default class Task extends React.Component<P, S> {
   static defaultProps?: Partial<P> = {
     size: 1
   };
-
   constructor(props: P) {
     super(props);
   }
@@ -146,8 +146,8 @@ export default class Task extends React.Component<P, S> {
       hover,
       size
     } = this.props;
+
     const width: number = 150 * size;
-    
     let opacity: number = 1;
     if (isOver && canDrop) { opacity = 0.5; }
     else if (isDragging || id < 0) { opacity = 0; }
