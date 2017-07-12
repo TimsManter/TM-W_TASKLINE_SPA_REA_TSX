@@ -1,7 +1,7 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  entry: "./src/tsx/App.tsx",
+  entry: "./src/tsx/App.jsx",
   output: {
     filename: "bundle.js",
     path: __dirname + "/dist"
@@ -9,7 +9,7 @@ module.exports = {
 
   module: {
     rules: [
-      {
+      /*{
         enforce: 'pre',
         test: /\.tsx?$/,
         loader: 'tslint-loader',
@@ -18,12 +18,11 @@ module.exports = {
           configFile: 'tslint.json'
         }
       },
-      // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
       {
         test: /\.tsx?$/,
         loader: "awesome-typescript-loader"
-      },
-
+      },*/
+      { test: /\.jsx?$/, exclude: /node_modules/, loader: "babel-loader" },
       {
         test: /\.scss$/,
         include: __dirname + "/src/scss",
@@ -37,7 +36,7 @@ module.exports = {
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
       {
         enforce: "pre",
-        test: /\.js$/,
+        test: /\.jsx?$/,
         loader: "source-map-loader"
       }
     ]
@@ -48,7 +47,7 @@ module.exports = {
 
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
-    extensions: [".ts", ".tsx", ".js", ".json"]
+    extensions: [".ts", ".tsx", ".js", ".jsx", ".json"]
   },
 
   devServer: {
