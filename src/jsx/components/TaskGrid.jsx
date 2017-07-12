@@ -372,7 +372,7 @@ export default class TaskGrid extends React.Component {
     };
   }
 
-  moveTask?(
+  moveTask(
     dTaskSpec, hTaskSpec, position) {
     const newPools = this.state.pools.slice();
     const hPool = newPools[hTaskSpec.poolIndex];
