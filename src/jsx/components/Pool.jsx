@@ -5,12 +5,9 @@ import HTML5Backend from "react-dnd-html5-backend";
 
 import Task from "./Task";
 
-export interface P { id: number; }
-export interface S { }
-
-export default class Pool extends React.Component<P, S> {
+export default class Pool extends React.Component {
   
-  render(): JSX.Element | false | null {
+  render() {
     return (
       <div>
         <Well className="step-pool">

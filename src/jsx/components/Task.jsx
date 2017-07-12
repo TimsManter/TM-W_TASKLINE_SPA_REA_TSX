@@ -17,69 +17,30 @@ import {
   ConnectDropTarget
 } from "react-dnd";
 
-/* INTERFACES */
-interface P {
-  poolIndex: number;
-  parentId?: number;
-  id: number;
-  size?: number;
-  isDragging?: boolean;
-  canDrop?: boolean;
-  isOver?: boolean;
-  connectDragSource?: ConnectDragSource;
-  connectDropTarget?: ConnectDropTarget;
-  moveTask?: (dragTask: TaskSpec, hoverTask: TaskSpec, position?: string | undefined) => void;
-  hover?: string;
-}
-interface S { }
-
-export interface TaskSpec {
-  id: number;
-  parentId: number;
-  poolIndex: number;
-}
-
-export interface PoolView {
-  key: number;
-  id: number;
-  tasks: TaskView[];
-}
-
-export interface TaskView {
-  key: number;
-  poolIndex: number;
-  id: number;
-  parentId?: number;
-  size: number;
-  content?: string;
-}
-
 /* METHODS */
-const taskSourceSpec: DragSourceSpec<P> = {
-  beginDrag(props: P, monitor: DragSourceMonitor, component: Task) {
-    const taskSpec: TaskSpec = {
+const taskSourceSpec = {
+  beginDrag(props, monitor, component) {
+    const taskSpec = {
       id: props.id,
       parentId: props.parentId,
       poolIndex: props.poolIndex
     };
     return taskSpec;
   },
-  canDrag(props: P) { return props.id >= 0; }
+  canDrag(props) { return props.id >= 0; }
 };
 
-const taskCollector = (
-  connect: DragSourceConnector,
-  monitor: DragSourceMonitor) => {
+const taskCollector = (connect, monitor) => {
   return {
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging()
   };
 };
 
-const taskTargetSpec: DropTargetSpec<P> = {
+const taskTargetSpec = {
   drop(props, monitor, component) {
-    const dragTaskSpec = monitor.getItem() as TaskSpec;
-    const hoverTaskSpec: TaskSpec = {
+    const dragTaskSpec = monitor.getItem();
+    const hoverTaskSpec = {
       id: props.id,
       parentId: props.parentId,
       poolIndex: props.poolIndex
@@ -92,20 +53,18 @@ const taskTargetSpec: DropTargetSpec<P> = {
   hover(props, monitor, component) {
     component.setState({ hover: checkTaskPosition(monitor, component) });
   },
-  canDrop(props: P, monitor: DropTargetMonitor) {
+  canDrop(props, monitor) {
     if (props.id === -2) { return false; }
-    const dTask = monitor.getItem() as TaskSpec;
+    const dTask = monitor.getItem();
     if (props.id === dTask.id) { return false; }
     if (props.parentId === dTask.id) { return false; }
     return true;
   }
 };
 
-const checkTaskPosition = (
-  monitor: DropTargetMonitor,
-  component: Task): string | undefined => {
+const checkTaskPosition = (monitor, component) => {
   if (component.props.id === -1) { return undefined; }
-  if (component.props.id === (monitor.getItem() as TaskSpec).id) { return undefined; }
+  if (component.props.id === monitor.getItem().id) { return undefined; }
   const taskRect = ReactDOM.findDOMNode(component).getBoundingClientRect();
   const cursorOffset = monitor.getClientOffset();
   const offset = 30;
@@ -127,7 +86,7 @@ const checkTaskPosition = (
   isDragging: monitor.isDragging(),
   canDrag: monitor.canDrag()
 }))
-export default class Task extends React.Component<P, S> {
+export default class Task extends React.Component {
   static defaultProps?: Partial<P> = {
     size: 1
   };
