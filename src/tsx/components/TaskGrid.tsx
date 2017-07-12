@@ -36,7 +36,7 @@ interface S {
 
 /* METHODS */
 const renderNavbar = (): JSX.Element => {
-  return (<Navbar>
+  return (<Navbar fluid>
     <Navbar.Header>
       <Navbar.Brand>
         <a href="#">TaskLine</a>
@@ -431,24 +431,28 @@ export default class TaskGrid extends React.Component<P, S> {
   render(): JSX.Element | null | false {
     const pools = this.state.pools.slice();
     return (
-      <div>
-        {renderNavbar()}
-        {poolViews(pools).map(p => (
-          <Pool key={p.key} id={p.id}>
-            {p.tasks.map(t => (
-              <Task
-                key={t.key}
-                poolIndex={t.poolIndex}
-                id={t.id}
-                parentId={t.parentId}
-                size={t.size}
-                moveTask={this.moveTask}>
-              {t.content}</Task>
-            ))}
-          </Pool>
-        ))}
-        <Pool id={0}>{JSON.stringify(this.state, null, 4)}</Pool>
-      </div>
+      <Grid fluid><Row>
+        <Col>
+          {renderNavbar()}
+          {poolViews(pools).map(p => (
+            <Pool key={p.key} id={p.id}>
+              {p.tasks.map(t => (
+                <Task
+                  key={t.key}
+                  poolIndex={t.poolIndex}
+                  id={t.id}
+                  parentId={t.parentId}
+                  size={t.size}
+                  moveTask={this.moveTask}>
+                {t.content}</Task>
+              ))}
+            </Pool>
+          ))}
+        </Col>
+        <Col style={{whiteSpace: "pre", fontFamily: "monospace"}}>
+          {JSON.stringify(this.state, null, 1)}
+        </Col>
+      </Row></Grid>
     );
   }
 }
