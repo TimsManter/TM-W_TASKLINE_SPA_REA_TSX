@@ -184,15 +184,7 @@ const insertNewTask = (
       pools[tSpec.poolIndex].tasks.push(newTask);
     } else {
       newTask.parentId = tSpec.id;
-      if (pools[tSpec.poolIndex + 1] === undefined) {
-        let maxId = tSpec.poolIndex;
-        for (let p in pools) {
-          if (pools[p].id > maxId) { maxId = pools[p].id; }
-        }
-        const newPool: TPool = { id: maxId + 1, tasks: [] };
-        pools.push(newPool);
-      }
-      pools[tSpec.poolIndex+1].tasks.push(newTask);
+      pools[checkPool(pools, tSpec.poolIndex+1)].tasks.push(newTask);
     }
   }
   else {
@@ -268,7 +260,7 @@ const moveVertChildTasks = (
     moveVertChildTasks(pools, poolIndex + 1, childIds[c], diff);
     let childIndex = getIndex(pools[poolIndex + 1], childIds[c]);
     let childTask = pools[poolIndex + 1].tasks.splice(childIndex, 1)[0];
-    pools[poolIndex + 1 - diff].tasks.push(childTask);
+    pools[checkPool(pools, poolIndex + 1 - diff)].tasks.push(childTask);
   }
 };
 
@@ -293,6 +285,18 @@ const getMaxId = (pools: TPool[]): number => {
     }
   }
   return maxId;
+};
+
+const checkPool = (pools: TPool[], poolIndex: number): number => {
+  if (pools[poolIndex] === undefined) {
+    let maxId = poolIndex;
+    for (let p in pools) {
+      if (pools[p].id > maxId) { maxId = pools[p].id; }
+    }
+    const newPool: TPool = { id: maxId + 1, tasks: [] };
+    pools.push(newPool);
+  }
+  return poolIndex;
 };
 
 /* CLASS */
