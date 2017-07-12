@@ -288,13 +288,15 @@ const getMaxId = (pools: TPool[]): number => {
 };
 
 const checkPool = (pools: TPool[], poolIndex: number): number => {
-  if (pools[poolIndex] === undefined) {
-    let maxId = poolIndex;
-    for (let p in pools) {
-      if (pools[p].id > maxId) { maxId = pools[p].id; }
+  for (let i = pools.length - 1; i <= poolIndex; i++) {
+    if (pools[poolIndex] === undefined) {
+      let maxId = poolIndex;
+      for (let p in pools) {
+        if (pools[p].id > maxId) { maxId = pools[p].id; }
+      }
+      const newPool: TPool = { id: maxId + 1, tasks: [] };
+      pools.push(newPool);
     }
-    const newPool: TPool = { id: maxId + 1, tasks: [] };
-    pools.push(newPool);
   }
   return poolIndex;
 };
