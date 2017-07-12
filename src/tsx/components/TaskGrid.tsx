@@ -355,6 +355,19 @@ const checkPool = (pools: TPool[], poolIndex: number): number => {
   return poolIndex;
 };
 
+const removeChilds = (pools: TPool[], poolIndex: number, taskId: number) => {
+  for (let p = poolIndex + 1; p < pools.length; p++) {
+    const childPool: TPool = pools[poolIndex + 1];
+    let childTasks = childPool.tasks
+      .filter(t => t.parentId === taskId);
+    for (let c in childTasks) {
+      let index = getIndex(childPool, childTasks[c].id);
+      childPool.tasks.splice(index, 1);
+      removeChilds(pools, poolIndex + 1, childTasks[c].id);
+    }
+  }
+};
+
 const removeEmptyPools = (pools: TPool[]) => {
   for (let p = pools.length - 1; p > 0; p--) {
     if (pools[p].tasks.length === 0) { pools.splice(p, 1); }
@@ -406,7 +419,10 @@ export default class TaskGrid extends React.Component<P, S> {
     const hPool: TPool = newPools[hTaskSpec.poolIndex];
     const dPool: TPool = newPools[dTaskSpec.poolIndex];
 
-    if (dTaskSpec.id === 0) {
+    if (hTaskSpec.id === 0) {
+      dPool.tasks.splice(getIndex(dPool, dTaskSpec), 1);
+      removeChilds(newPools, dTaskSpec.poolIndex, dTaskSpec.id);
+    } else if (dTaskSpec.id === 0) {
       insertNewTask(newPools, hTaskSpec, getMaxId(newPools) + 1, position);
     }
     else if (hPool === dPool) {
