@@ -39,6 +39,21 @@ export interface TaskSpec {
   poolIndex: number;
 }
 
+export interface PoolView {
+  key: number;
+  id: number;
+  tasks: TaskView[];
+}
+
+export interface TaskView {
+  key: number;
+  poolIndex: number;
+  id: number;
+  parentId?: number;
+  size: number;
+  content?: string;
+}
+
 /* METHODS */
 const taskSourceSpec: DragSourceSpec<P> = {
   beginDrag(props: P, monitor: DragSourceMonitor, component: Task) {
@@ -79,7 +94,7 @@ const taskTargetSpec: DropTargetSpec<P> = {
     component.setState({ hover: checkTaskPosition(monitor, component) });
   },
   canDrop(props: P, monitor) {
-    if (props.id === -2) { return false; }
+    if (!props.parentId) { return false; }
     const dTask = monitor.getItem() as TaskSpec;
     if (props.id === dTask.id) { return false; }
     return true;

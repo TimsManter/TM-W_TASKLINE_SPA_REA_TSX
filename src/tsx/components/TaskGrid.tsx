@@ -14,7 +14,7 @@ import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 
 import Pool from "./Pool";
-import Task, { TaskSpec } from "./Task";
+import Task, { TaskSpec, PoolView, TaskView } from "./Task";
 
 /* INTERFACES */
 interface TTask {
@@ -65,6 +65,61 @@ const calcSize = (
     }
   }
   return count;
+};
+
+const poolViews = (
+  pools: TPool[]): PoolView[] => {
+  const elems: PoolView[] = pools.map((pool, i) => {
+    return { key: i, id: pool.id, tasks: [] };
+  });
+  elems[0].tasks = pools[0].tasks.map((task, i) => {
+    return {
+      key: i,
+      poolIndex: 0,
+      id: task.id,
+      size: calcSize(pools, task.id, 0),
+      content: task.content
+    };
+  });
+  for (let mt in elems[0].tasks) {
+    addChildTaskViews(elems, pools, 0, parseInt(mt));
+  }
+  return elems;
+};
+
+const addChildTaskViews = (
+  poolViews: PoolView[],
+  pools: TPool[],
+  poolIndex: number,
+  taskIndex: number) => {
+  if (poolViews[poolIndex + 1] === undefined) { return; }
+  const currentTask = poolViews[poolIndex].tasks[taskIndex];
+  const childTaskViews = poolViews[poolIndex + 1].tasks;
+  const childTasks: TTask[] = pools[poolIndex + 1].tasks
+    .filter((task) => task.parentId === currentTask.id);
+  if (childTasks.length > 0) {
+    for (let ct in childTasks) {
+      const index = childTaskViews.length;
+      childTaskViews.push({
+        key: index,
+        poolIndex: poolIndex + 1,
+        id: childTasks[ct].id,
+        parentId: childTasks[ct].parentId,
+        size: calcSize(pools, childTasks[ct].id, poolIndex + 1),
+        content: childTasks[ct].content
+      });
+      addChildTaskViews(poolViews, pools, poolIndex + 1, index);
+    }
+  }
+  else {
+    childTaskViews.push({
+      key: childTaskViews.length,
+      poolIndex: poolIndex + 1,
+      id: -1,
+      parentId: currentTask.id < 0 ? undefined : currentTask.id,
+      size: 1
+    });
+  }
 };
 
 const renderChildTasks = (
