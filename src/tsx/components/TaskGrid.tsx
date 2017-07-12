@@ -51,9 +51,7 @@ const renderNavbar = (): JSX.Element => {
 };
 
 const calcSize = (
-  pools: TPool[],
-  taskId: number,
-  poolIndex: number): number => {
+  pools: TPool[], taskId: number, poolIndex: number): number => {
   let count = 1;
   if (taskId === -1 || pools[poolIndex+1] === undefined) { return count; }
   for (let p = poolIndex+1; p < pools.length; p++) {
@@ -187,9 +185,7 @@ const renderChildTasks = (
 };
 
 const swapTasks = (
-  pools: TPool[],
-  tSpec1: TaskSpec,
-  tSpec2: TaskSpec): boolean => {
+  pools: TPool[], tSpec1: TaskSpec, tSpec2: TaskSpec): boolean => {
   const tasks1: TTask[] = pools[tSpec1.poolIndex].tasks;
   const tasks2: TTask[] = pools[tSpec2.poolIndex].tasks;
   const tIndex1: number = getIndex(pools[tSpec1.poolIndex], tSpec1);
@@ -255,9 +251,7 @@ const insertNewTask = (
 };
 
 const changeParentId = (
-  pool: TPool,
-  tSpec: TaskSpec,
-  newId: number | TaskSpec): boolean => {
+  pool: TPool, tSpec: TaskSpec, newId: number | TaskSpec): boolean => {
   const tasks: TTask[] = pool.tasks;
   const task: TTask = tasks.filter(t => t.id === tSpec.id)[0];
   if (task === undefined) { return false; }
@@ -270,7 +264,8 @@ const changeParentId = (
   return true;
 };
 
-const getIndex = (pool: TPool, specId: TaskSpec | number): number | undefined => {
+const getIndex = (
+  pool: TPool, specId: TaskSpec | number): number | undefined => {
   const id = typeof specId === "number" ? specId : specId.id;
   const task: TTask = pool.tasks.filter(t => t.id === id)[0];
   if (task === undefined) { return undefined; }
@@ -405,7 +400,8 @@ export default class TaskGrid extends React.Component<P, S> {
     };
   }
 
-  moveTask?(dTaskSpec: TaskSpec, hTaskSpec: TaskSpec, position?: string | undefined) {
+  moveTask?(
+    dTaskSpec: TaskSpec, hTaskSpec: TaskSpec, position?: string | undefined) {
     const newPools = this.state.pools.slice();
     const hPool: TPool = newPools[hTaskSpec.poolIndex];
     const dPool: TPool = newPools[dTaskSpec.poolIndex];
