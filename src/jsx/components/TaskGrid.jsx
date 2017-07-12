@@ -399,7 +399,7 @@ export default class TaskGrid extends React.Component {
     this.setState({ pools: newPools });
   }
 
-  addSinglePool?() {
+  addSinglePool() {
     const pools = this.state.pools;
     pools.push({ id: pools.length, tasks: [] });
     this.setState({ pools });
