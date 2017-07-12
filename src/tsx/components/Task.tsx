@@ -81,7 +81,6 @@ const taskTargetSpec: DropTargetSpec<P> = {
   canDrop(props: P, monitor) {
     if (props.id === -2) { return false; }
     const dTask = monitor.getItem() as TaskSpec;
-    if (props.parentId === dTask.id) { return false; }
     if (props.id === dTask.id) { return false; }
     return true;
   }
