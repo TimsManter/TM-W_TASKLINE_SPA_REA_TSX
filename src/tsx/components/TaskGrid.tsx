@@ -116,7 +116,7 @@ const addChildTaskViews = (
     childTaskViews.push({
       key: index,
       poolIndex: poolIndex + 1,
-      id: -1,
+      id: currentTask.id < 0 ? -2 : -1,
       parentId: currentTask.id < 0 ? undefined : currentTask.id,
       size: 1
     });
