@@ -12,7 +12,7 @@
 
 ## Overview
 
-TaskLine is simple frontend-only task board example created using React framework, TypeScript and Webpack bundler.
+TaskLine is simple frontend-only task board example created using React framework, ~~TypeScript~~ Babel and Webpack bundler.
 
 ## Screenshots
 
@@ -24,3 +24,7 @@ TaskLine is simple frontend-only task board example created using React framewor
 2. Install npm packages: `npm install`
 3. Make sure you have Webpack and Dev Server installed
 4. Run dev server: `webpack-dev-server --open`
+
+## Remarks
+
+- TypeScript version is still available at `ts` branch
