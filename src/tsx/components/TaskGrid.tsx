@@ -289,6 +289,7 @@ const moveVertTask = (
     parentTask.parentId = tSpecTo.parentId;
     pools[tSpecTo.poolIndex].tasks.push(parentTask);
     moveVertChildTasks(pools, tSpecFrom.poolIndex, tSpecFrom.id, diff);
+    removeEmptyPools(pools);
     return;
   }
   let tIndexTo = getIndex(pools[tSpecTo.poolIndex], tSpecTo.id);
@@ -302,8 +303,9 @@ const moveVertTask = (
     parentTask.parentId = tSpecTo.parentId;
     if (position === "right") { tIndexTo++; }
   }
-  pools[pIndexTo].tasks.splice(tIndexTo, 0, parentTask);
+  pools[checkPool(pools, pIndexTo)].tasks.splice(tIndexTo, 0, parentTask);
   moveVertChildTasks(pools, tSpecFrom.poolIndex, tSpecFrom.id, diff);
+  removeEmptyPools(pools);
 };
 
 const moveVertChildTasks = (
@@ -356,6 +358,12 @@ const checkPool = (pools: TPool[], poolIndex: number): number => {
     }
   }
   return poolIndex;
+};
+
+const removeEmptyPools = (pools: TPool[]) => {
+  for (let p = pools.length - 1; p > 0; p--) {
+    if (pools[p].tasks.length === 0) { pools.splice(p, 1); }
+  }
 };
 
 /* CLASS */
