@@ -380,10 +380,8 @@ const removeEmptyPools = (pools: TPool[]) => {
 /* CLASS */
 @DragDropContext(HTML5Backend)
 export default class TaskGrid extends React.Component<P, S> {
-  placeholders?: TaskSpec[];
   constructor() {
     super();
-    this.placeholders = [];
     this.moveTask = this.moveTask.bind(this);
     this.addSinglePool = this.addSinglePool.bind(this);
     this.state = {
