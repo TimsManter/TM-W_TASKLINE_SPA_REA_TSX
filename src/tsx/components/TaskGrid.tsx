@@ -338,29 +338,21 @@ export default class TaskGrid extends React.Component<P, S> {
     const newPools = this.state.pools.slice();
     const hPool: TPool = newPools[hTaskSpec.poolIndex];
     const dPool: TPool = newPools[dTaskSpec.poolIndex];
-    // TODO: This section require more unify and removing `position` condition
-    if (position) {
-      if (dTaskSpec.id === 0) {
-        insertNewTask(newPools, hTaskSpec, getMaxId(newPools) + 1, position);
-      }
-      else if (hPool === dPool) {
-        insertTask(hPool, dTaskSpec, hTaskSpec, position);
-      } else {
-        moveVertTask(newPools, dTaskSpec, hTaskSpec, position);
-      }
-    } else {
-      if (dTaskSpec.id === 0) {
-        insertNewTask(newPools, hTaskSpec, getMaxId(newPools) + 1);
-      }
-      else if (hPool === dPool) {
+
+    if (dTaskSpec.id === 0) {
+      insertNewTask(newPools, hTaskSpec, getMaxId(newPools) + 1, position);
+    }
+    else if (hPool === dPool) {
+      if (position) { insertTask(hPool, dTaskSpec, hTaskSpec, position); }
+      else {
         if (hTaskSpec.id > 0) { // normal task
           swapTasks(newPools, dTaskSpec, hTaskSpec);
         } else { // dummy task
           changeParentId(dPool, dTaskSpec, hTaskSpec.parentId);
         }
-      } else {
-        moveVertTask(newPools, dTaskSpec, hTaskSpec, position);
       }
+    } else {
+      moveVertTask(newPools, dTaskSpec, hTaskSpec, position);
     }
     this.setState({ pools: newPools });
   }
