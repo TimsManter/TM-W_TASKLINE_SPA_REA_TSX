@@ -16,7 +16,6 @@
     },
     {
       "taskName": "start",
-      "type": "shell",
       "group": {
         "kind": "build",
         "isDefault": true
