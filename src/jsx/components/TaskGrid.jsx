@@ -16,27 +16,8 @@ import HTML5Backend from "react-dnd-html5-backend";
 import Pool from "./Pool";
 import Task, { TaskSpec, PoolView, TaskView } from "./Task";
 
-/* INTERFACES */
-interface TTask {
-  id: number;
-  parentId?: number;
-  content: string;
-}
-interface TPool {
-  id: number;
-  tasks: TTask[];
-}
-
-interface P { 
-  calcSize?: (taskId: number, poolIndex: number) => number;
-}
-interface S {
-  pools: TPool[];
-}
-
 /* METHODS */
-const renderNavbar = (
-  moveTask: (dragTask: TaskSpec, hoverTask: TaskSpec, position?: string | undefined) => void): JSX.Element => {
+const renderNavbar = (moveTask) => {
   return (<Navbar fluid>
     <Navbar.Header>
       <Navbar.Brand>
@@ -51,8 +32,7 @@ const renderNavbar = (
   </Navbar>);
 };
 
-const calcSize = (
-  pools: TPool[], taskId: number, poolIndex: number): number => {
+const calcSize = (pools, taskId, poolIndex) => {
   let count = 1;
   if (taskId === -1 || pools[poolIndex+1] === undefined) { return count; }
   for (let p = poolIndex+1; p < pools.length; p++) {
@@ -66,9 +46,8 @@ const calcSize = (
   return count;
 };
 
-const poolViews = (
-  pools: TPool[]): PoolView[] => {
-  const elems: PoolView[] = pools.map((pool, i) => {
+const poolViews = (pools) => {
+  const elems = pools.map((pool, i) => {
     return { key: i, id: pool.id, tasks: [] };
   });
   elems[0].tasks = pools[0].tasks.map((task, i) => {
@@ -86,15 +65,11 @@ const poolViews = (
   return elems;
 };
 
-const addChildTaskViews = (
-  poolViews: PoolView[],
-  pools: TPool[],
-  poolIndex: number,
-  taskIndex: number) => {
+const addChildTaskViews = (poolViews, pools, poolIndex, taskIndex) => {
   if (poolViews[poolIndex + 1] === undefined) { return; }
   const currentTask = poolViews[poolIndex].tasks[taskIndex];
   const childTaskViews = poolViews[poolIndex + 1].tasks;
-  const childTasks: TTask[] = pools[poolIndex + 1].tasks
+  const childTasks = pools[poolIndex + 1].tasks
     .filter((task) => task.parentId === currentTask.id);
   if (currentTask.id > 0 && childTasks.length > 0) {
     for (let ct in childTasks) {
@@ -124,13 +99,10 @@ const addChildTaskViews = (
 };
 
 /* old render method
-const renderChildTasks = (
-  grid: TaskGrid,
-  pools: TPool[],
-  poolIndex: number): JSX.Element[] => {
+const renderChildTasks = (grid, pools, poolIndex) => {
   const currentTasks = pools[poolIndex].tasks;
   const parentTasks = pools[poolIndex - 1].tasks;
-  const tasks: JSX.Element[] = [];
+  const tasks = [];
   let k = 0;
   let pk = 0;
   for (let p in parentTasks) {
@@ -186,12 +158,11 @@ const renderChildTasks = (
   return tasks;
 }; */
 
-const swapTasks = (
-  pools: TPool[], tSpec1: TaskSpec, tSpec2: TaskSpec): boolean => {
-  const tasks1: TTask[] = pools[tSpec1.poolIndex].tasks;
-  const tasks2: TTask[] = pools[tSpec2.poolIndex].tasks;
-  const tIndex1: number = getIndex(pools[tSpec1.poolIndex], tSpec1);
-  const tIndex2: number = getIndex(pools[tSpec2.poolIndex], tSpec2);
+const swapTasks = (pools, tSpec1, tSpec2) => {
+  const tasks1 = pools[tSpec1.poolIndex].tasks;
+  const tasks2 = pools[tSpec2.poolIndex].tasks;
+  const tIndex1 = getIndex(pools[tSpec1.poolIndex], tSpec1);
+  const tIndex2 = getIndex(pools[tSpec2.poolIndex], tSpec2);
   if (tIndex1 === undefined || tIndex2 === undefined) { return false; }
   if (tSpec1.poolIndex === tSpec2.poolIndex) {
     if (tSpec1.poolIndex === 0 || tSpec1.parentId === tSpec2.parentId) {
@@ -206,15 +177,11 @@ const swapTasks = (
   return true;
 };
 
-const insertTask = (
-  pool: TPool,
-  tSpecFrom: TaskSpec,
-  tSpecTo: TaskSpec,
-  position: string | undefined): boolean => {
-  const tasks: TTask[] = pool.tasks;
-  const tIndexFrom: number = getIndex(pool, tSpecFrom);
-  const taskToMove: TTask = tasks.splice(tIndexFrom, 1)[0];
-  let tIndexTo: number = getIndex(pool, tSpecTo);
+const insertTask = (pool, tSpecFrom, tSpecTo, position) => {
+  const tasks = pool.tasks;
+  const tIndexFrom = getIndex(pool, tSpecFrom);
+  const taskToMove = tasks.splice(tIndexFrom, 1)[0];
+  let tIndexTo = getIndex(pool, tSpecTo);
   if (tIndexFrom === undefined || tIndexTo === undefined) { return false; }
   if (position === "right") { tIndexTo++; }
   tasks.splice(tIndexTo, 0, taskToMove);
@@ -224,12 +191,8 @@ const insertTask = (
   return true;
 };
 
-const insertNewTask = (
-  pools: TPool[],
-  tSpec: TaskSpec,
-  id: number,
-  position?: string | undefined): boolean => {
-  const newTask: TTask = {
+const insertNewTask = (pools, tSpec, id, position) => {
+  const newTask = {
     id: id,
     content: "New Task"
   };
@@ -244,7 +207,7 @@ const insertNewTask = (
   }
   else {
     if (tSpec.parentId) { newTask.parentId = tSpec.parentId; }
-    let tIndexTo: number = getIndex(pools[tSpec.poolIndex], tSpec);
+    let tIndexTo = getIndex(pools[tSpec.poolIndex], tSpec);
     if (tIndexTo === undefined) { return false; }
     if (position === "right") { tIndexTo++; }
     pools[tSpec.poolIndex].tasks.splice(tIndexTo, 0, newTask);
@@ -252,12 +215,11 @@ const insertNewTask = (
   return true;
 };
 
-const changeParentId = (
-  pool: TPool, tSpec: TaskSpec, newId: number | TaskSpec): boolean => {
-  const tasks: TTask[] = pool.tasks;
-  const task: TTask = tasks.filter(t => t.id === tSpec.id)[0];
+const changeParentId = (pool, tSpec, newId) => {
+  const tasks = pool.tasks;
+  const task = tasks.filter(t => t.id === tSpec.id)[0];
   if (task === undefined) { return false; }
-  const tIndex: number = tasks.indexOf(task);
+  const tIndex = tasks.indexOf(task);
   if (typeof newId === "number") {
     tasks[tIndex].parentId = newId;
   } else {
@@ -266,22 +228,17 @@ const changeParentId = (
   return true;
 };
 
-const getIndex = (
-  pool: TPool, specId: TaskSpec | number): number | undefined => {
+const getIndex = (pool, specId) => {
   const id = typeof specId === "number" ? specId : specId.id;
-  const task: TTask = pool.tasks.filter(t => t.id === id)[0];
+  const task = pool.tasks.filter(t => t.id === id)[0];
   if (task === undefined) { return undefined; }
   return pool.tasks.indexOf(task);
 };
 
-const moveVertTask = (
-  pools: TPool[],
-  tSpecFrom: TaskSpec,
-  tSpecTo: TaskSpec,
-  position: string | undefined) => {
+const moveVertTask = (pools, tSpecFrom, tSpecTo, position) => {
   const parentIndex = getIndex(pools[tSpecFrom.poolIndex], tSpecFrom.id);
   const parentTask = pools[tSpecFrom.poolIndex].tasks.splice(parentIndex, 1)[0];
-  let diff: number = tSpecFrom.poolIndex - tSpecTo.poolIndex;
+  let diff = tSpecFrom.poolIndex - tSpecTo.poolIndex;
   if (tSpecTo.id === -1) {
     parentTask.parentId = tSpecTo.parentId;
     pools[tSpecTo.poolIndex].tasks.push(parentTask);
@@ -306,10 +263,10 @@ const moveVertTask = (
 };
 
 const moveVertChildTasks = (
-  pools: TPool[],
-  poolIndex: number,
-  taskId: number,
-  diff: number) => {
+  pools,
+  poolIndex,
+  taskId,
+  diff) => {
   if (pools[poolIndex + 1] === undefined) { return; }
   const childIds = getChildIds(pools[poolIndex+1], taskId);
   for (let c in childIds) {
@@ -320,9 +277,9 @@ const moveVertChildTasks = (
   }
 };
 
-const getChildIds = (pool: TPool, specId: TaskSpec | number): number[] => {
+const getChildIds = (pool, specId) => {
   const id = typeof specId === "number" ? specId : specId.id;
-  let ids: number[] = [];
+  let ids = [];
   for (let t in pool.tasks) {
     if (pool.tasks[t].parentId === id) {
       ids.push(pool.tasks[t].id);
@@ -331,7 +288,7 @@ const getChildIds = (pool: TPool, specId: TaskSpec | number): number[] => {
   return ids;
 };
 
-const getMaxTaskId = (pools: TPool[]): number => {
+const getMaxTaskId = (pools) => {
   let maxId = 0;
   for (let p in pools) {
     for (let t in pools[p].tasks) {
@@ -343,23 +300,23 @@ const getMaxTaskId = (pools: TPool[]): number => {
   return maxId;
 };
 
-const checkPool = (pools: TPool[], poolIndex: number): number => {
+const checkPool = (pools, poolIndex) => {
   for (let i = pools.length - 1; i <= poolIndex; i++) {
     if (pools[poolIndex] === undefined) {
       let maxId = poolIndex;
       for (let p in pools) {
         if (pools[p].id > maxId) { maxId = pools[p].id; }
       }
-      const newPool: TPool = { id: maxId + 1, tasks: [] };
+      const newPool = { id: maxId + 1, tasks: [] };
       pools.push(newPool);
     }
   }
   return poolIndex;
 };
 
-const removeChilds = (pools: TPool[], poolIndex: number, taskId: number) => {
+const removeChilds = (pools, poolIndex, taskId) => {
   for (let p = poolIndex + 1; p < pools.length; p++) {
-    const childPool: TPool = pools[poolIndex + 1];
+    const childPool = pools[poolIndex + 1];
     let childTasks = childPool.tasks
       .filter(t => t.parentId === taskId);
     for (let c in childTasks) {
@@ -371,7 +328,7 @@ const removeChilds = (pools: TPool[], poolIndex: number, taskId: number) => {
   removeEmptyPools(pools);
 };
 
-const removeEmptyPools = (pools: TPool[]) => {
+const removeEmptyPools = (pools) => {
   for (let p = pools.length - 1; p > 0; p--) {
     if (pools[p].tasks.length === 0) { pools.splice(p, 1); }
   }
@@ -379,7 +336,7 @@ const removeEmptyPools = (pools: TPool[]) => {
 
 /* CLASS */
 @DragDropContext(HTML5Backend)
-export default class TaskGrid extends React.Component<P, S> {
+export default class TaskGrid extends React.Component {
   constructor() {
     super();
     this.moveTask = this.moveTask.bind(this);
@@ -415,11 +372,11 @@ export default class TaskGrid extends React.Component<P, S> {
     };
   }
 
-  moveTask?(
-    dTaskSpec: TaskSpec, hTaskSpec: TaskSpec, position?: string | undefined) {
+  moveTask(
+    dTaskSpec, hTaskSpec, position) {
     const newPools = this.state.pools.slice();
-    const hPool: TPool = newPools[hTaskSpec.poolIndex];
-    const dPool: TPool = newPools[dTaskSpec.poolIndex];
+    const hPool = newPools[hTaskSpec.poolIndex];
+    const dPool = newPools[dTaskSpec.poolIndex];
 
     if (hTaskSpec.id === 0) {
       dPool.tasks.splice(getIndex(dPool, dTaskSpec), 1);
@@ -442,13 +399,13 @@ export default class TaskGrid extends React.Component<P, S> {
     this.setState({ pools: newPools });
   }
 
-  addSinglePool?() {
+  addSinglePool() {
     const pools = this.state.pools;
     pools.push({ id: pools.length, tasks: [] });
     this.setState({ pools });
   }
 
-  render(): JSX.Element | null | false {
+  render() {
     const pools = this.state.pools.slice();
     return (
       <Grid fluid><Row style={{display: "flex"}}>

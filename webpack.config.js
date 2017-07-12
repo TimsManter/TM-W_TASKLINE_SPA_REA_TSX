@@ -1,14 +1,14 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  entry: "./src/tsx/App.tsx",
+  entry: "./src/jsx/App.jsx",
   output: {
     filename: "bundle.js",
     path: __dirname + "/dist"
   },
   module: {
     rules: [
-      {
+      /*{
         enforce: 'pre',
         test: /\.tsx?$/,
         loader: 'tslint-loader',
@@ -20,8 +20,8 @@ module.exports = {
       {
         test: /\.tsx?$/,
         loader: "awesome-typescript-loader"
-      },
-
+      },*/
+      { test: /\.jsx?$/, exclude: /node_modules/, loader: "babel-loader" },
       {
         test: /\.scss$/,
         include: __dirname + "/src/scss",
@@ -33,14 +33,15 @@ module.exports = {
       },
       {
         enforce: "pre",
-        test: /\.js$/,
+        test: /\.jsx?$/,
         loader: "source-map-loader"
       }
     ]
   },
   devtool: "source-map",
   resolve: {
-    extensions: [".ts", ".tsx", ".js", ".json"]
+    // Add '.ts' and '.tsx' as resolvable extensions.
+    extensions: [".ts", ".tsx", ".js", ".jsx", ".json"]
   },
   devServer: {
     contentBase: __dirname + "/dist"
