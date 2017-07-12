@@ -97,7 +97,7 @@ const addChildTaskViews = (
   const childTaskViews = poolViews[poolIndex + 1].tasks;
   const childTasks: TTask[] = pools[poolIndex + 1].tasks
     .filter((task) => task.parentId === currentTask.id);
-  if (childTasks.length > 0) {
+  if (currentTask.id > 0 && childTasks.length > 0) {
     for (let ct in childTasks) {
       const index = childTaskViews.length;
       childTaskViews.push({
@@ -112,13 +112,15 @@ const addChildTaskViews = (
     }
   }
   else {
+    const index = childTaskViews.length;
     childTaskViews.push({
-      key: childTaskViews.length,
+      key: index,
       poolIndex: poolIndex + 1,
       id: -1,
       parentId: currentTask.id < 0 ? undefined : currentTask.id,
       size: 1
     });
+    addChildTaskViews(poolViews, pools, poolIndex + 1, index);
   }
 };
 
@@ -423,20 +425,21 @@ export default class TaskGrid extends React.Component<P, S> {
     return (
       <div>
         {renderNavbar()}
-        {pools.map((pool, i) => (
-          <Pool key={i}>
-            {i === 0 ?
-              (pool.tasks.map((task, j) => (
-                <Task key={j}
-                  poolIndex={i}
-                  id={task.id}
-                  moveTask={this.moveTask}
-                  size={calcSize(pools, task.id, i)}>
-                  {task.content}
-                </Task>))) : renderChildTasks(this, pools, i)}
+        {poolViews(pools).map(p => (
+          <Pool key={p.key} id={p.id}>
+            {p.tasks.map(t => (
+              <Task
+                key={t.key}
+                poolIndex={t.poolIndex}
+                id={t.id}
+                parentId={t.parentId}
+                size={t.size}
+                moveTask={this.moveTask}>
+              {t.content}</Task>
+            ))}
           </Pool>
-        ))}{this.placeholders=[]}
-        <Pool>{JSON.stringify(this.state, null, 4)}</Pool>
+        ))}
+        <Pool id={0}>{JSON.stringify(this.state, null, 4)}</Pool>
       </div>
     );
   }

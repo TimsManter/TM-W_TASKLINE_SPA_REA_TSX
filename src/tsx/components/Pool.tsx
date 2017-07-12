@@ -5,7 +5,7 @@ import HTML5Backend from "react-dnd-html5-backend";
 
 import Task from "./Task";
 
-export interface P { }
+export interface P { id: number; }
 export interface S { }
 
 export default class Pool extends React.Component<P, S> {
