@@ -87,14 +87,14 @@ const checkTaskPosition = (monitor, component) => {
   canDrag: monitor.canDrag()
 }))
 export default class Task extends React.Component {
-  static defaultProps?: Partial<P> = {
+  static defaultProps = {
     size: 1
   };
-  constructor(props: P) {
+  constructor(props) {
     super(props);
   }
 
-  render(): JSX.Element | null | false {
+  render() {
     const {
       connectDragSource,
       connectDropTarget,
@@ -106,8 +106,8 @@ export default class Task extends React.Component {
       size
     } = this.props;
 
-    const width: number = 150 * size;
-    let opacity: number = 1;
+    const width = 150 * size;
+    let opacity = 1;
     if (isOver && canDrop) { opacity = 0.5; }
     else if (isDragging || id < 0) { opacity = 0; }
     else { opacity = 1; }
