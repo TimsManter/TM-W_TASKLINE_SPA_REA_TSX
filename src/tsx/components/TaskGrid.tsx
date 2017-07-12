@@ -123,6 +123,7 @@ const addChildTaskViews = (
   }
 };
 
+/* old render method
 const renderChildTasks = (
   grid: TaskGrid,
   pools: TPool[],
@@ -183,7 +184,7 @@ const renderChildTasks = (
     pk++;
   }
   return tasks;
-};
+}; */
 
 const swapTasks = (
   pools: TPool[], tSpec1: TaskSpec, tSpec2: TaskSpec): boolean => {
