@@ -330,7 +330,7 @@ const getChildIds = (pool: TPool, specId: TaskSpec | number): number[] => {
   return ids;
 };
 
-const getMaxId = (pools: TPool[]): number => {
+const getMaxTaskId = (pools: TPool[]): number => {
   let maxId = 0;
   for (let p in pools) {
     for (let t in pools[p].tasks) {
@@ -384,6 +384,7 @@ export default class TaskGrid extends React.Component<P, S> {
     super();
     this.placeholders = [];
     this.moveTask = this.moveTask.bind(this);
+    this.addSinglePool = this.addSinglePool.bind(this);
     this.state = {
       pools: [ // sample data
         {
@@ -425,7 +426,7 @@ export default class TaskGrid extends React.Component<P, S> {
       dPool.tasks.splice(getIndex(dPool, dTaskSpec), 1);
       removeChilds(newPools, dTaskSpec.poolIndex, dTaskSpec.id);
     } else if (dTaskSpec.id === 0) {
-      insertNewTask(newPools, hTaskSpec, getMaxId(newPools) + 1, position);
+      insertNewTask(newPools, hTaskSpec, getMaxTaskId(newPools) + 1, position);
     }
     else if (hPool === dPool) {
       if (position) { insertTask(hPool, dTaskSpec, hTaskSpec, position); }
@@ -440,6 +441,12 @@ export default class TaskGrid extends React.Component<P, S> {
       moveVertTask(newPools, dTaskSpec, hTaskSpec, position);
     }
     this.setState({ pools: newPools });
+  }
+
+  addSinglePool?() {
+    const pools = this.state.pools;
+    pools.push({ id: pools.length, tasks: [] });
+    this.setState({ pools });
   }
 
   render(): JSX.Element | null | false {
@@ -462,6 +469,7 @@ export default class TaskGrid extends React.Component<P, S> {
               ))}
             </Pool>
           ))}
+          <Button block onClick={this.addSinglePool}>Add pool</Button>
         </Col>
         <Col style={{whiteSpace: "pre", fontFamily: "monospace"}}>
           {JSON.stringify(this.state, null, 1)}
