@@ -35,7 +35,8 @@ interface S {
 }
 
 /* METHODS */
-const renderNavbar = (): JSX.Element => {
+const renderNavbar = (
+  moveTask: (dragTask: TaskSpec, hoverTask: TaskSpec, position?: string | undefined) => void): JSX.Element => {
   return (<Navbar fluid>
     <Navbar.Header>
       <Navbar.Brand>
@@ -44,7 +45,7 @@ const renderNavbar = (): JSX.Element => {
     </Navbar.Header>
     <Navbar.Collapse>
       <Navbar.Form pullRight>
-        <Task poolIndex={-1} id={0}></Task>
+        <Task poolIndex={-1} id={0} moveTask={moveTask}></Task>
       </Navbar.Form>
     </Navbar.Collapse>
   </Navbar>);
@@ -366,6 +367,7 @@ const removeChilds = (pools: TPool[], poolIndex: number, taskId: number) => {
       removeChilds(pools, poolIndex + 1, childTasks[c].id);
     }
   }
+  removeEmptyPools(pools);
 };
 
 const removeEmptyPools = (pools: TPool[]) => {
@@ -445,7 +447,7 @@ export default class TaskGrid extends React.Component<P, S> {
     return (
       <Grid fluid><Row style={{display: "flex"}}>
         <Col style={{flexGrow: 1}}>
-          {renderNavbar()}
+          {renderNavbar(this.moveTask)}
           {poolViews(pools).map(p => (
             <Pool key={p.key} id={p.id}>
               {p.tasks.map(t => (
