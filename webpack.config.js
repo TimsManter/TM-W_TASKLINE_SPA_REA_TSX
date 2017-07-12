@@ -6,7 +6,6 @@ module.exports = {
     filename: "bundle.js",
     path: __dirname + "/dist"
   },
-
   module: {
     rules: [
       {
@@ -18,7 +17,6 @@ module.exports = {
           configFile: 'tslint.json'
         }
       },
-      // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
       {
         test: /\.tsx?$/,
         loader: "awesome-typescript-loader"
@@ -33,8 +31,6 @@ module.exports = {
           { loader: "sass-loader" }
         ]
       },
-
-      // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
       {
         enforce: "pre",
         test: /\.js$/,
@@ -42,19 +38,13 @@ module.exports = {
       }
     ]
   },
-
-  // Enable sourcemaps for debugging webpack's output.
   devtool: "source-map",
-
   resolve: {
-    // Add '.ts' and '.tsx' as resolvable extensions.
     extensions: [".ts", ".tsx", ".js", ".json"]
   },
-
   devServer: {
     contentBase: __dirname + "/dist"
   },
-
   plugins: [
     new HtmlWebpackPlugin({
       template: "src/ejs/index.ejs"
