@@ -1,4 +1,4 @@
 {
-  "presets": ["react"],
-  "plugins": ["transform-decorators"]
+  "plugins": ["transform-decorators"],
+  "presets": ["react"]
 }
