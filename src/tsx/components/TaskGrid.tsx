@@ -279,6 +279,8 @@ const moveVertTask = (
   tSpecFrom: TaskSpec,
   tSpecTo: TaskSpec,
   position: string | undefined) => {
+  if (tSpecFrom.poolIndex < tSpecTo.poolIndex &&
+    isDescendant(pools, tSpecFrom, tSpecTo)) { return; }
   const parentIndex = getIndex(pools[tSpecFrom.poolIndex], tSpecFrom.id);
   const parentTask = pools[tSpecFrom.poolIndex].tasks.splice(parentIndex, 1)[0];
   let diff: number = tSpecFrom.poolIndex - tSpecTo.poolIndex;
@@ -369,6 +371,21 @@ const removeChilds = (pools: TPool[], poolIndex: number, taskId: number) => {
     }
   }
   removeEmptyPools(pools);
+};
+
+const isDescendant = (
+  pools: TPool[],
+  parentSpec: TaskSpec,
+  childSpec: TaskSpec): boolean => {
+  if (childSpec.poolIndex <= parentSpec.poolIndex) { return false; }
+  let taskParentId: number = childSpec.parentId;
+  for (let p = childSpec.poolIndex - 1; p >= parentSpec.poolIndex; p--) {
+    let parentTask = pools[p].tasks.filter(t => t.id === taskParentId)[0];
+    if (parentTask === undefined) { return false; }
+    if (parentTask.id === parentSpec.id) { return true; }
+    taskParentId = parentTask.parentId;
+  }
+  return false;
 };
 
 const removeEmptyPools = (pools: TPool[]) => {
