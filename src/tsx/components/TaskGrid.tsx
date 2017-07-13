@@ -281,9 +281,10 @@ const moveVertTask = (
   position: string | undefined) => {
   if (tSpecFrom.poolIndex < tSpecTo.poolIndex &&
     isDescendant(pools, tSpecFrom, tSpecTo)) { return; }
+  let diff: number = tSpecFrom.poolIndex - tSpecTo.poolIndex;
+  if (diff === 1 && tSpecFrom.parentId === tSpecTo.id) { return; }
   const parentIndex = getIndex(pools[tSpecFrom.poolIndex], tSpecFrom.id);
   const parentTask = pools[tSpecFrom.poolIndex].tasks.splice(parentIndex, 1)[0];
-  let diff: number = tSpecFrom.poolIndex - tSpecTo.poolIndex;
   if (tSpecTo.id === -1) {
     parentTask.parentId = tSpecTo.parentId;
     pools[tSpecTo.poolIndex].tasks.push(parentTask);
