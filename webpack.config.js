@@ -4,7 +4,7 @@ module.exports = {
   entry: "./src/tsx/App.tsx",
   output: {
     filename: "bundle.js",
-    path: __dirname + "/dist"
+    path: path.resolve(__dirname, "dist")
   },
   module: {
     rules: [
@@ -24,7 +24,7 @@ module.exports = {
 
       {
         test: /\.scss$/,
-        include: __dirname + "/src/scss",
+        include: path.resolve(__dirname, "src/scss"),
         use: [
           { loader: "style-loader" },
           { loader: "css-loader" },
@@ -43,7 +43,7 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js", ".json"]
   },
   devServer: {
-    contentBase: __dirname + "/dist"
+    contentBase: path.resolve(__dirname, "dist")
   },
   plugins: [
     new HtmlWebpackPlugin({
