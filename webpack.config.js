@@ -9,19 +9,6 @@ module.exports = {
   },
   module: {
     rules: [
-      /*{
-        enforce: 'pre',
-        test: /\.tsx?$/,
-        loader: 'tslint-loader',
-        exclude: /(node_modules)/,
-        options: {
-          configFile: 'tslint.json'
-        }
-      },
-      {
-        test: /\.tsx?$/,
-        loader: "awesome-typescript-loader"
-      },*/
       { test: /\.jsx?$/, exclude: /node_modules/, loader: "babel-loader" },
       {
         test: /\.scss$/,
